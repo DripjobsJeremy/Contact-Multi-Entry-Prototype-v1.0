@@ -412,11 +412,11 @@ var state = {
   phones: [{id:1, value:'', primary:true}],
   emails: [{id:1, value:'', primary:true}],
   addresses: [
-    {id:1, label:'Job Address', line1:'', line2:'', city:'', state:'', zip:'', primary:true},
-    {id:2, label:'Billing Address', line1:'', line2:'', city:'', state:'', zip:'', sameAsPrimary:true}
-  ]
+    {id:1, line1:'', line2:'', city:'', state:'', zip:'', primary:true}
+  ],
+  billing: {line1:'', line2:'', city:'', state:'', zip:'', sameAsPrimary:true}
 };
-var nextId = {phones:2, emails:2, addr:3};
+var nextId = {phones:2, emails:2, addr:2};
 var modalCallback = null;
 var primaryChanged = false;
 
@@ -613,111 +613,109 @@ function removeEntry(cat, id) {
 // ── ADDRESSES (fully JS-rendered) ────────────────────────────────────
 // state.addresses[0] is always Primary (left col)
 // state.addresses[1] is always Secondary/Billing (right col, has sameAsPrimary toggle)
-// state.addresses[2+] render as stacked extra cards
+// Job Address = always the primary from state.addresses
+// Billing Address = separate state.billing object, synced from primary when sameAsPrimary is ON
 
 var ADDR_KEYS = ['line1','line2','city','state','zip'];
 
 function renderAddresses() {
   var container = document.getElementById('addresses-container');
   container.innerHTML = '';
-  var addrs = state.addresses;
-  if(!addrs.length) return;
 
-  // ── two-column row for first two ──
+  var primary = state.addresses.find(function(a){ return a.primary; }) || state.addresses[0];
+
+  // Two-column row: Job Address (primary) | Billing Address
   var twoCol = document.createElement('div');
   twoCol.className = 'addr-2col';
-
-  twoCol.appendChild(buildAddrCol(addrs[0], true));
-  if(addrs.length >= 2) twoCol.appendChild(buildAddrCol(addrs[1], false));
+  twoCol.appendChild(buildJobAddrCol(primary));
+  twoCol.appendChild(buildBillingCol());
   container.appendChild(twoCol);
 
-  // ── stacked extras (index 2+) ──
-  if(addrs.length > 2) {
+  // Stacked extras: non-primary addresses
+  var extras = state.addresses.filter(function(a){ return !a.primary; });
+  if(extras.length) {
     var extraWrap = document.createElement('div');
     extraWrap.style.cssText = 'display:flex;flex-direction:column;gap:12px;margin-top:14px';
-    for(var i = 2; i < addrs.length; i++) {
-      extraWrap.appendChild(buildAddrExtra(addrs[i]));
-    }
+    extras.forEach(function(addr){ extraWrap.appendChild(buildAddrExtra(addr)); });
     container.appendChild(extraWrap);
   }
 
-  // Attach live-sync listeners so primary typing mirrors to secondary when sameAsPrimary is ON
   attachAddrSync();
 }
 
-function buildAddrCol(addr, isPrimary) {
+function buildJobAddrCol(addr) {
   var col = document.createElement('div');
-
-  // ── header ──
-  var hd = document.createElement('div');
-  hd.className = 'addr-col-hd';
-
-  var titleEl = document.createElement('span');
-  titleEl.className = 'addr-col-title';
-  titleEl.textContent = addr.label || (isPrimary ? 'Primary Address' : 'Billing Address');
+  var hd = document.createElement('div'); hd.className = 'addr-col-hd';
+  var titleEl = document.createElement('span'); titleEl.className = 'addr-col-title';
+  titleEl.textContent = 'Job Address';
   hd.appendChild(titleEl);
-
-  if(isPrimary) {
-    var pb = document.createElement('span');
-    pb.className = 'pbadge';
-    pb.style.fontSize = '10px';
-    pb.innerHTML = '★ Primary';
-    hd.appendChild(pb);
-  } else {
-    var spBtn = document.createElement('button');
-    spBtn.type = 'button';
-    spBtn.className = 'sbadge';
-    spBtn.style.fontSize = '10px';
-    spBtn.innerHTML = '☆ Set Primary';
-    spBtn.onclick = (function(id){ return function(){ setAddrPrimary(id); }; })(addr.id);
-    hd.appendChild(spBtn);
-
-    // "Same as Primary" toggle (only on the secondary column)
-    var tglWrap = document.createElement('label');
-    tglWrap.className = 'same-toggle';
-    tglWrap.appendChild(document.createTextNode('Same as Primary '));
-    var tglLabel = document.createElement('label');
-    tglLabel.className = 'tgl';
-    var chk = document.createElement('input');
-    chk.type = 'checkbox';
-    chk.checked = !!addr.sameAsPrimary;
-    chk.setAttribute('aria-label', 'Same as primary address');
-    chk.addEventListener('change', function() {
-      addr.sameAsPrimary = chk.checked;
-      if(chk.checked) syncSecondaryFromPrimary();
-      renderAddresses();
-    });
-    var track = document.createElement('span'); track.className = 'tgl-track';
-    var thumb = document.createElement('span'); thumb.className = 'tgl-thumb';
-    tglLabel.appendChild(chk); tglLabel.appendChild(track); tglLabel.appendChild(thumb);
-    tglWrap.appendChild(tglLabel);
-    hd.appendChild(tglWrap);
-  }
-
+  var pb = document.createElement('span'); pb.className = 'pbadge'; pb.style.fontSize = '10px';
+  pb.innerHTML = '★ Primary';
+  hd.appendChild(pb);
   col.appendChild(hd);
 
-  // ── fields ──
-  var locked = !isPrimary && !!addr.sameAsPrimary;
-  var primary = state.addresses[0];
+  var fieldsWrap = document.createElement('div');
+  fieldsWrap.style.cssText = 'display:flex;flex-direction:column;gap:10px';
+  fieldsWrap.appendChild(buildAddrInput(addr, 'line1', 'Address Line 1', 'Enter a location', false, null));
+  fieldsWrap.appendChild(buildAddrInput(addr, 'line2', 'Address Line 2', ' ', false, null));
+  var csz = document.createElement('div'); csz.className = 'mf-row'; csz.style.marginTop = '0';
+  [{key:'city',label:'City',flex:'2'},{key:'state',label:'State',flex:'1'},{key:'zip',label:'Zip',flex:'1'}].forEach(function(f){
+    var mf = document.createElement('div'); mf.className = 'mf'; mf.style.flex = f.flex;
+    var inp = document.createElement('input'); inp.type = 'text'; inp.placeholder = ' '; inp.value = addr[f.key];
+    inp.dataset.addrKey = f.key;
+    inp.addEventListener('input', (function(k){ return function(e){ addr[k]=e.target.value; }; })(f.key));
+    var lbl = document.createElement('label'); lbl.textContent = f.label;
+    mf.appendChild(inp); mf.appendChild(lbl); csz.appendChild(mf);
+  });
+  fieldsWrap.appendChild(csz);
+  col.appendChild(fieldsWrap);
+  return col;
+}
+
+function buildBillingCol() {
+  var bill = state.billing;
+  var locked = !!bill.sameAsPrimary;
+  var primary = state.addresses.find(function(a){ return a.primary; }) || state.addresses[0];
+
+  var col = document.createElement('div');
+  var hd = document.createElement('div'); hd.className = 'addr-col-hd';
+  var titleEl = document.createElement('span'); titleEl.className = 'addr-col-title';
+  titleEl.textContent = 'Billing Address';
+  hd.appendChild(titleEl);
+
+  // Same as Primary toggle
+  var tglWrap = document.createElement('label'); tglWrap.className = 'same-toggle';
+  tglWrap.appendChild(document.createTextNode('Same as Primary '));
+  var tglLabel = document.createElement('label'); tglLabel.className = 'tgl';
+  var chk = document.createElement('input'); chk.type = 'checkbox';
+  chk.checked = locked;
+  chk.setAttribute('aria-label', 'Same as primary address');
+  chk.addEventListener('change', function() {
+    bill.sameAsPrimary = chk.checked;
+    if(chk.checked) syncBillingFromPrimary();
+    renderAddresses();
+  });
+  var track = document.createElement('span'); track.className = 'tgl-track';
+  var thumb = document.createElement('span'); thumb.className = 'tgl-thumb';
+  tglLabel.appendChild(chk); tglLabel.appendChild(track); tglLabel.appendChild(thumb);
+  tglWrap.appendChild(tglLabel);
+  hd.appendChild(tglWrap);
+  col.appendChild(hd);
+
   var fieldsWrap = document.createElement('div');
   fieldsWrap.style.cssText = 'display:flex;flex-direction:column;gap:10px' + (locked ? ';opacity:.5' : '');
 
-  // Line 1
-  fieldsWrap.appendChild(buildAddrInput(addr, 'line1', 'Address Line 1', 'Enter a location', locked, locked ? primary.line1 : null));
-  // Line 2
-  fieldsWrap.appendChild(buildAddrInput(addr, 'line2', 'Address Line 2', ' ', locked, locked ? primary.line2 : null));
-  // City / State / Zip
-  var csz = document.createElement('div');
-  csz.className = 'mf-row'; csz.style.marginTop = '0';
+  fieldsWrap.appendChild(buildAddrInput(bill, 'line1', 'Address Line 1', 'Enter a location', locked, locked ? primary.line1 : null));
+  fieldsWrap.appendChild(buildAddrInput(bill, 'line2', 'Address Line 2', ' ', locked, locked ? primary.line2 : null));
+  var csz = document.createElement('div'); csz.className = 'mf-row'; csz.style.marginTop = '0';
   [{key:'city',label:'City',flex:'2'},{key:'state',label:'State',flex:'1'},{key:'zip',label:'Zip',flex:'1'}].forEach(function(f){
     var mf = document.createElement('div'); mf.className = 'mf'; mf.style.flex = f.flex;
-    var inp = document.createElement('input');
-    inp.type = 'text'; inp.placeholder = ' ';
-    inp.value = locked ? primary[f.key] : addr[f.key];
+    var inp = document.createElement('input'); inp.type = 'text'; inp.placeholder = ' ';
+    inp.value = locked ? primary[f.key] : bill[f.key];
     inp.disabled = locked;
     inp.dataset.addrKey = f.key;
     if(locked) { inp.style.background = '#f9fafb'; inp.style.color = '#9ca3af'; }
-    if(!locked) inp.addEventListener('input', (function(k){ return function(e){ addr[k]=e.target.value; }; })(f.key));
+    if(!locked) inp.addEventListener('input', (function(k){ return function(e){ bill[k]=e.target.value; }; })(f.key));
     var lbl = document.createElement('label'); lbl.textContent = f.label;
     if(locked) lbl.style.background = '#f9fafb';
     mf.appendChild(inp); mf.appendChild(lbl); csz.appendChild(mf);
@@ -744,11 +742,10 @@ function buildAddrInput(addr, key, labelTxt, placeholder, locked, overrideVal) {
 }
 
 function buildAddrExtra(addr) {
-  var ae = document.createElement('div');
-  ae.className = 'ae';
+  var ae = document.createElement('div'); ae.className = 'ae';
   var hd = document.createElement('div'); hd.className = 'ae-hd';
   var titleEl = document.createElement('span'); titleEl.className = 'ae-hd-title';
-  titleEl.textContent = addr.label || 'Additional Address';
+  titleEl.textContent = 'Additional Address';
   hd.appendChild(titleEl);
   var spBtn = document.createElement('button');
   spBtn.type = 'button'; spBtn.className = 'sbadge'; spBtn.style.fontSize = '10px';
@@ -776,49 +773,43 @@ function buildAddrExtra(addr) {
   return ae;
 }
 
-// Copy primary address values into secondary state + visible inputs
-function syncSecondaryFromPrimary() {
-  var primary   = state.addresses[0];
-  var secondary = state.addresses[1];
-  if(!primary || !secondary) return;
-  ADDR_KEYS.forEach(function(k){ secondary[k] = primary[k]; });
+// Copy primary address values into state.billing
+function syncBillingFromPrimary() {
+  var primary = state.addresses.find(function(a){ return a.primary; }) || state.addresses[0];
+  if(!primary) return;
+  ADDR_KEYS.forEach(function(k){ state.billing[k] = primary[k]; });
 }
 
-// After render, attach input listeners on primary col so secondary mirrors live
+// After render, attach input listeners on Job Address col so Billing mirrors live when toggle ON
 function attachAddrSync() {
-  var secondary = state.addresses[1];
-  if(!secondary || !secondary.sameAsPrimary) return;
+  if(!state.billing.sameAsPrimary) return;
   var container = document.getElementById('addresses-container');
   var twoCol = container.querySelector('.addr-2col');
   if(!twoCol || !twoCol.children[0] || !twoCol.children[1]) return;
-  var primaryInputs   = twoCol.children[0].querySelectorAll('input[data-addr-key]');
-  var secondaryInputs = twoCol.children[1].querySelectorAll('input[data-addr-key]');
+  var primaryInputs = twoCol.children[0].querySelectorAll('input[data-addr-key]');
+  var billingInputs = twoCol.children[1].querySelectorAll('input[data-addr-key]');
   primaryInputs.forEach(function(inp) {
     inp.addEventListener('input', function() {
-      if(state.addresses[1] && state.addresses[1].sameAsPrimary) {
-        var key = inp.dataset.addrKey;
-        state.addresses[0][key] = inp.value;
-        secondaryInputs.forEach(function(sInp){
-          if(sInp.dataset.addrKey === key) sInp.value = inp.value;
-        });
-      }
+      if(!state.billing.sameAsPrimary) return;
+      var key = inp.dataset.addrKey;
+      var primary = state.addresses.find(function(a){ return a.primary; });
+      if(primary) primary[key] = inp.value;
+      billingInputs.forEach(function(bInp){
+        if(bInp.dataset.addrKey === key) bInp.value = inp.value;
+      });
     });
   });
 }
 
 function setAddrPrimary(id) {
-  var idx = state.addresses.map(function(a){ return a.id; }).indexOf(id);
-  if(idx <= 0) return;
-  var item = state.addresses.splice(idx, 1)[0];
-  state.addresses.unshift(item);
-  // If secondary has sameAsPrimary ON, immediately sync it to the new primary
-  if(state.addresses[1] && state.addresses[1].sameAsPrimary) syncSecondaryFromPrimary();
+  state.addresses.forEach(function(a){ a.primary = (a.id === id); });
+  if(state.billing.sameAsPrimary) syncBillingFromPrimary();
   renderAddresses();
   toast('Primary address updated.', 'ok');
 }
 
 function addAddress() {
-  state.addresses.push({id:nextId.addr++, label:'', line1:'', line2:'', city:'', state:'', zip:''});
+  state.addresses.push({id:nextId.addr++, line1:'', line2:'', city:'', state:'', zip:'', primary:false});
   renderAddresses();
   var container = document.getElementById('addresses-container');
   var extras = container.querySelectorAll('.ae');
@@ -826,11 +817,11 @@ function addAddress() {
 }
 
 function removeAddress(id) {
-  if(state.addresses.length <= 1) { toast('You must keep at least one address.', 'wa'); return; }
-  var wasPrimary = state.addresses[0].id === id;
+  var addr = state.addresses.find(function(a){ return a.id === id; });
+  if(!addr) return;
+  if(addr.primary) { toast('Set another address as primary first.', 'wa'); return; }
   state.addresses = state.addresses.filter(function(a){ return a.id !== id; });
-  if(wasPrimary) toast('Address removed. The next address is now primary.', 'inf');
-  else toast('Address removed.', 'ok');
+  toast('Address removed.', 'ok');
   renderAddresses();
 }
 
