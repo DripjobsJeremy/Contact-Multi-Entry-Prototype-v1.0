@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>New Customer - DripJobs</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f4f6;color:#1f2937;display:flex;min-height:100vh;font-size:14px}
+.sidebar{width:214px;background:#1e1b4b;min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo-area{padding:14px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo-icon{width:36px;height:36px;background:#7C3AED;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:900}
+.logo-text{color:#fff;font-size:17px;font-weight:700}
+.workspace{padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08);cursor:pointer}
+.workspace:hover{background:rgba(255,255,255,0.05)}
+.ws-avatar{width:28px;height:28px;border-radius:6px;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.ws-name{color:#e5e7eb;font-size:13px;font-weight:500}
+.nav-section{padding:16px 16px 4px;color:#6b7280;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;color:#9ca3af;font-size:13px;cursor:pointer;transition:all 0.15s;user-select:none;border-radius:6px;margin:1px 8px}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#e5e7eb}
+.nav-item.active{background:#7C3AED;color:#fff}
+.nav-item .ni{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:#EF4444;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px}
+.main-wrap{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:56px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:50}
+.search-wrap{flex:1;max-width:380px;position:relative}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;color:#374151;background:#f9fafb;outline:none;transition:border-color 0.15s}
+.search-wrap input:focus{border-color:#7C3AED;background:#fff}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:15px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.notif-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid #e5e7eb;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;position:relative;color:#6b7280}
+.notif-btn:hover{border-color:#7C3AED;color:#7C3AED}
+.user-chip{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:8px}
+.user-chip:hover{background:#f3f4f6}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+.user-name{font-size:13px;color:#374151;font-weight:500}
+.content{padding:24px;flex:1}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px 22px}
+.stat-card.highlight{background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%);border-color:#c4b5fd}
+.stat-label{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#6b7280;margin-bottom:6px}
+.stat-value{font-size:26px;font-weight:700;color:#111827}
+.page-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.ptab{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid #e5e7eb;background:#fff;color:#6b7280;transition:all 0.15s;min-height:36px}
+.ptab:hover{border-color:#7C3AED;color:#7C3AED}
+.ptab.active{background:#7C3AED;border-color:#7C3AED;color:#fff}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:16px}
+.card-hd{padding:18px 22px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f3f4f6}
+.card-hd-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.card-hd h2{font-size:15px;font-weight:600;color:#111827}
+.card-bd{padding:20px 22px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fl{font-size:11px;font-weight:500;color:#6b7280;margin-bottom:1px}
+.fi{padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;color:#111827;background:#fff;outline:none;transition:border-color 0.15s,box-shadow 0.15s;min-height:44px;width:100%;font-family:inherit}
+.fi:focus{border-color:#7C3AED;box-shadow:0 0 0 3px rgba(124,58,237,0.08)}
+.fi::placeholder{color:#9ca3af}
+.fi.err{border-color:#EF4444!important;box-shadow:0 0 0 3px rgba(239,68,68,0.08)!important}
+.errmsg{font-size:11px;color:#EF4444;margin-top:3px;display:none}
+.errmsg.show{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid-addr{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
+.fgap{display:flex;flex-direction:column;gap:14px}
+/* MULTI ENTRY */
+.multi-wrap{margin-top:2px}
+.entry-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.ei{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fafafa;transition:all 0.15s}
+.ei.primary{border-color:#7C3AED;background:#faf5ff}
+.ei:hover{border-color:#c4b5fd}
+.ei-val{flex:1;min-width:0}
+.ei-val input{border:none;background:none;font-size:14px;color:#111827;outline:none;width:100%;padding:0;font-family:inherit}
+.ei-val input:focus{color:#7C3AED}
+.pbadge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;background:#7C3AED;color:#fff;font-size:11px;font-weight:600;border-radius:20px;flex-shrink:0;white-space:nowrap}
+.sbadge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;background:#f3f4f6;color:#6b7280;font-size:11px;font-weight:500;border-radius:20px;flex-shrink:0;cursor:pointer;border:1px solid #e5e7eb;transition:all 0.15s;white-space:nowrap;min-height:22px}
+.sbadge:hover{background:#ede9fe;color:#7C3AED;border-color:#c4b5fd}
+.ei-del{width:30px;height:30px;border-radius:6px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:15px;transition:all 0.15s;flex-shrink:0}
+.ei-del:hover{background:#fef2f2;color:#EF4444}
+.ei-del:disabled{opacity:0.3;cursor:not-allowed}
+.add-btn{display:flex;align-items:center;gap:8px;padding:9px 14px;border:1.5px dashed #d1d5db;border-radius:8px;background:none;cursor:pointer;color:#7C3AED;font-size:13px;font-weight:500;transition:all 0.15s;min-height:44px;width:100%}
+.add-btn:hover{border-color:#7C3AED;background:#faf5ff}
+/* ADDRESS MULTI */
+.ae{border:1.5px solid #e5e7eb;border-radius:10px;background:#fafafa;transition:all 0.15s;margin-bottom:8px}
+.ae.primary{border-color:#7C3AED;background:#faf5ff}
+.ae:hover{border-color:#c4b5fd}
+.ae-hd{display:flex;align-items:center;gap:9px;padding:10px 12px 8px}
+.ae-body{padding:0 12px 12px;display:flex;flex-direction:column;gap:8px}
+/* SETTINGS ROW */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+/* TOGGLES */
+.tgl-item{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #f3f4f6}
+.tgl-item:last-child{border-bottom:none}
+.tgl-label{font-size:14px;color:#374151}
+.tgl{position:relative;width:42px;height:22px;flex-shrink:0}
+.tgl input{opacity:0;width:0;height:0;position:absolute}
+.tgl-track{position:absolute;inset:0;background:#d1d5db;border-radius:11px;cursor:pointer;transition:background 0.2s}
+.tgl input:checked+.tgl-track{background:#7C3AED}
+.tgl-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform 0.2s;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.tgl input:checked~.tgl-thumb{transform:translateX(20px)}
+.btn-pr{padding:11px 26px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s;min-height:46px}
+.btn-pr:hover{background:#6d28d9;box-shadow:0 4px 12px rgba(124,58,237,0.3)}
+.btn-sc{padding:11px 26px;background:#fff;color:#374151;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s;min-height:46px}
+.btn-sc:hover{border-color:#7C3AED;color:#7C3AED}
+.form-actions{display:flex;gap:12px;padding-top:8px}
+.toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:12px 16px;border-radius:10px;font-size:14px;font-weight:500;color:#fff;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.2);pointer-events:all;max-width:340px;animation:tst .3s ease}
+.toast.ok{background:#059669}
+.toast.er{background:#DC2626}
+.toast.wa{background:#D97706}
+.toast.inf{background:#2563EB}
+@keyframes tst{from{transform:translateX(80px);opacity:0}to{transform:translateX(0);opacity:1}}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal-box{background:#fff;border-radius:14px;padding:26px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25)}
+.modal-box h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.modal-box p{font-size:14px;color:#6b7280;margin-bottom:20px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.drip-warn{display:flex;gap:8px;padding:10px 12px;background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;font-size:12px;color:#92400e;margin-top:8px}
+.footer{text-align:center;padding:20px;color:#9ca3af;font-size:12px}
+.primary-notice{display:none;align-items:flex-start;gap:10px;padding:11px 14px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;font-size:12px;color:#78350f;line-height:1.5;margin-top:10px}
+.primary-notice.show{display:flex}
+.primary-notice-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.primary-notice strong{font-weight:600}
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo-area">
+    <div class="logo-icon">⚙</div>
+    <span class="logo-text">dripjobs</span>
+  </div>
+  <div class="workspace">
+    <div class="ws-avatar">TN</div>
+    <span class="ws-name">The Nest</span>
+  </div>
+  <div class="nav-section">Sales</div>
+  <div class="nav-item active"><span class="ni">👤</span> Contacts</div>
+  <div class="nav-item"><span class="ni">📋</span> Sales List</div>
+  <div class="nav-item"><span class="ni">🔄</span> Sales Pipeline</div>
+  <div class="nav-section">Jobs</div>
+  <div class="nav-item"><span class="ni">🔧</span> Change Orders</div>
+  <div class="nav-item"><span class="ni">📅</span> Job Schedule</div>
+  <div class="nav-item"><span class="ni">☰</span> Jobs List</div>
+  <div class="nav-item"><span class="ni">📊</span> Jobs Pipeline</div>
+  <div class="nav-item"><span class="ni">📁</span> Work Orders</div>
+  <div class="nav-section">Daily Operations</div>
+  <div class="nav-item"><span class="ni">🗓</span> Appointments <span class="nav-badge">11</span></div>
+  <div class="nav-item"><span class="ni">💬</span> Chat</div>
+  <div class="nav-item"><span class="ni">✅</span> Tasks</div>
+  <div class="nav-section">Documents</div>
+  <div class="nav-item"><span class="ni">📄</span> Invoices</div>
+  <div class="nav-item"><span class="ni">📝</span> Proposals</div>
+  <div class="nav-section">Financials</div>
+  <div class="nav-item"><span class="ni">💰</span> Job Costing</div>
+  <div class="nav-item"><span class="ni">📈</span> Production Rates</div>
+  <div class="nav-item"><span class="ni">📉</span> Metrics</div>
+  <div class="nav-section">Marketing</div>
+  <div style="margin-top:auto"></div>
+  <div class="nav-item" style="margin-bottom:8px"><span class="ni">⚙</span> Settings</div>
+</nav>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search leads, contacts, tags..." aria-label="Search">
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn" title="Notifications">⚠️</div>
+      <div class="notif-btn" title="Alerts">🔔</div>
+      <div class="user-chip">
+        <div class="user-avatar">JH</div>
+        <span class="user-name">Jeremy Harrison ▾</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card highlight">
+        <div class="stat-label">Open Balance</div>
+        <div class="stat-value">$0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Lifetime Revenue</div>
+        <div class="stat-value">$0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Unpaid Invoices</div>
+        <div class="stat-value">0 Open</div>
+      </div>
+    </div>
+
+    <!-- PAGE TABS -->
+    <div class="page-tabs">
+      <button class="ptab active">Information</button>
+      <button class="ptab">Tasks (0 Open)</button>
+      <button class="ptab">Notes (0)</button>
+      <button class="ptab">Attachments (0)</button>
+      <button class="ptab">Emails (0)</button>
+      <button class="ptab">SMS (0)</button>
+    </div>
+
+    <!-- PERSONAL INFORMATION -->
+    <div class="card" id="card-personal">
+      <div class="card-hd">
+        <div class="card-hd-ico" style="background:#eff6ff">👤</div>
+        <h2>Personal Information</h2>
+      </div>
+      <div class="card-bd">
+        <div class="fgap">
+          <div class="grid2">
+            <div class="fg">
+              <label class="fl" for="firstName">First Name</label>
+              <input id="firstName" class="fi" type="text" placeholder="First name">
+            </div>
+            <div class="fg">
+              <label class="fl" for="lastName">Last Name</label>
+              <input id="lastName" class="fi" type="text" placeholder="Last name">
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl" for="company">Company Name</label>
+            <input id="company" class="fi" type="text" placeholder="Company name">
+          </div>
+
+          <!-- PHONE NUMBERS -->
+          <div class="fg">
+            <label class="fl">Phone Numbers</label>
+            <div class="multi-wrap">
+              <div class="entry-list" id="phones-list"></div>
+              <button class="add-btn" id="add-phone-btn" onclick="addEntry('phones')">
+                <span>＋</span> Add Phone Number
+              </button>
+            </div>
+          </div>
+
+          <!-- EMAIL ADDRESSES -->
+          <div class="fg">
+            <label class="fl">Email Addresses</label>
+            <div class="multi-wrap">
+              <div class="entry-list" id="emails-list"></div>
+              <button class="add-btn" id="add-email-btn" onclick="addEntry('emails')">
+                <span>＋</span> Add Email Address
+              </button>
+              <div class="primary-notice" id="primary-change-notice">
+                <span class="primary-notice-icon">ℹ️</span>
+                <span><strong>Heads up:</strong> Updating a Primary Phone Number or Email Address applies going forward. If this contact has open Deals, Jobs, or Invoices, you may want to review and update the contact information on those records as well.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADDRESSES -->
+    <div class="card" id="card-addresses">
+      <div class="card-hd">
+        <div class="card-hd-ico" style="background:#f0fdf4">📍</div>
+        <h2>Addresses</h2>
+      </div>
+      <div class="card-bd">
+        <div class="fg">
+          <label class="fl">Physical Addresses</label>
+          <div id="addresses-list"></div>
+          <button class="add-btn" id="add-addr-btn" onclick="addAddress()">
+            <span>＋</span> Add Address
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT SETTINGS -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-ico" style="background:#fffbeb">⚙</div>
+        <h2>Contact Settings</h2>
+      </div>
+      <div class="card-bd">
+        <div class="settings-grid">
+          <div class="fg">
+            <label class="fl" for="tag">Contact Tag</label>
+            <select id="tag" class="fi">
+              <option value="">Select a type...</option>
+              <option>Residential</option>
+              <option>Commercial</option>
+              <option>HOA</option>
+              <option>Property Manager</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="fl" for="lead-src">Lead Source</label>
+            <select id="lead-src" class="fi">
+              <option value="">Select a lead source...</option>
+              <option>Google</option>
+              <option>Referral</option>
+              <option>Angi Leads</option>
+              <option>Facebook</option>
+              <option>Direct Mail</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="fl" for="deal-owner">Deal Owner</label>
+            <select id="deal-owner" class="fi">
+              <option>Jeremy Harrison</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTIONS -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-ico" style="background:#fef2f2">🛡</div>
+        <h2>Options</h2>
+      </div>
+      <div class="card-bd">
+        <div class="tgl-item">
+          <span class="tgl-label">Is Lead</span>
+          <label class="tgl"><input type="checkbox" id="isLead"><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
+        </div>
+        <div class="tgl-item">
+          <span class="tgl-label">Active Contact</span>
+          <label class="tgl"><input type="checkbox" id="isActive" checked><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
+        </div>
+        <div class="tgl-item">
+          <span class="tgl-label">Opt Out of Blasts/Newsletters</span>
+          <label class="tgl"><input type="checkbox" id="optBlasts"><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
+        </div>
+        <div class="tgl-item">
+          <span class="tgl-label">Opt Out of Drips</span>
+          <label class="tgl"><input type="checkbox" id="optDrips"><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
+        </div>
+        <div class="tgl-item">
+          <span class="tgl-label">Opt Out of All SMS</span>
+          <label class="tgl"><input type="checkbox" id="optSMS"><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="form-actions">
+      <button class="btn-pr" onclick="saveContact()">Save Changes</button>
+      <button class="btn-sc" onclick="cancelForm()">Cancel</button>
+    </div>
+    <div class="footer">Contact created at 3/24/2026 6:56:14 PM by Jeremy Harrison<br>Copyright © 2026 Dripjobs</div>
+  </main>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toasts"></div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-bg" id="confirm-modal">
+  <div class="modal-box">
+    <h3 id="modal-title">Confirm Action</h3>
+    <p id="modal-body">Are you sure?</p>
+    <div class="modal-actions">
+      <button class="btn-sc" style="min-height:40px;padding:8px 20px" onclick="modalCancel()">Cancel</button>
+      <button class="btn-pr" style="min-height:40px;padding:8px 20px;background:#EF4444" id="modal-confirm-btn" onclick="modalConfirm()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────
+const state = {
+  phones: [{id:1,value:'',primary:true}],
+  emails: [{id:1,value:'',primary:true}],
+  addresses: [{id:1,street:'',city:'',state:'',zip:'',primary:true}]
+};
+let nextId = {phones:2,emails:2,addresses:2};
+let modalCallback = null;
+let primaryChanged = false; // tracks if primary phone/email was changed since last save
+
+// ── TOAST ──────────────────────────────────────────────────────────
+function toast(msg, type='ok', dur=3500) {
+  const icons = {ok:'✅',er:'❌',wa:'⚠️',inf:'ℹ️'};
+  const t = document.createElement('div');
+  t.className = 'toast '+type;
+  t.innerHTML = '<span>'+icons[type]+'</span><span>'+msg+'</span>';
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(()=>{t.style.animation='tst .3s ease reverse';setTimeout(()=>t.remove(),300)},dur);
+}
+
+// ── MODAL ──────────────────────────────────────────────────────────
+function showModal(title,body,confirmTxt,cb,danger=true) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent = body;
+  const btn = document.getElementById('modal-confirm-btn');
+  btn.textContent = confirmTxt;
+  btn.style.background = danger ? '#EF4444' : '#7C3AED';
+  document.getElementById('confirm-modal').classList.add('open');
+  modalCallback = cb;
+}
+function modalCancel() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  modalCallback = null;
+}
+function modalConfirm() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  if(modalCallback) modalCallback();
+  modalCallback = null;
+}
+
+// ── RENDER ENTRIES (phones/emails) ─────────────────────────────────
+function renderEntries(cat) {
+  const list = document.getElementById(cat+'-list');
+  list.innerHTML = '';
+  const entries = state[cat];
+  const isPhone = cat === 'phones';
+
+  entries.forEach((entry,idx) => {
+    const div = document.createElement('div');
+    div.className = 'ei' + (entry.primary?' primary':'');
+    div.dataset.id = entry.id;
+
+    const valDiv = document.createElement('div');
+    valDiv.className = 'ei-val';
+    const input = document.createElement('input');
+    input.type = isPhone ? 'tel' : 'email';
+    input.placeholder = isPhone ? 'e.g. (555) 867-5309' : 'e.g. name@example.com';
+    input.value = entry.value;
+    input.setAttribute('aria-label', (isPhone?'Phone':'Email')+' number '+(idx+1));
+    input.addEventListener('input', e => {
+      entry.value = e.target.value;
+      // clear error
+      const err = div.querySelector('.errmsg');
+      if(err) err.style.display='none';
+      input.classList.remove('err-input');
+    });
+    input.addEventListener('blur', e => validateEntry(cat,entry,input,div));
+    valDiv.appendChild(input);
+
+    const errEl = document.createElement('div');
+    errEl.className = 'errmsg';
+    errEl.style.cssText = 'font-size:11px;color:#EF4444;margin-top:3px;display:none;';
+    valDiv.appendChild(errEl);
+    div.appendChild(valDiv);
+
+    // Badge
+    if(entry.primary) {
+      const badge = document.createElement('span');
+      badge.className = 'pbadge';
+      badge.title = 'Primary – used in communications and drip sequences';
+      badge.innerHTML = '★ Primary';
+      div.appendChild(badge);
+    } else {
+      const badge = document.createElement('button');
+      badge.className = 'sbadge';
+      badge.title = 'Set as primary';
+      badge.innerHTML = '☆ Set Primary';
+      badge.onclick = () => setPrimary(cat, entry.id);
+      div.appendChild(badge);
+    }
+
+    // Delete button
+    const del = document.createElement('button');
+    del.className = 'ei-del';
+    del.innerHTML = '🗑';
+    del.title = entries.length <= 1 ? 'Cannot remove the only entry' : 'Remove this '+(isPhone?'phone':'email');
+    del.disabled = entries.length <= 1;
+    del.onclick = () => removeEntry(cat, entry.id);
+    div.appendChild(del);
+
+    list.appendChild(div);
+  });
+}
+
+// ── VALIDATE ENTRY ─────────────────────────────────────────────────
+function validateEntry(cat, entry, input, container) {
+  const errEl = container.querySelector('.errmsg');
+  if(!entry.value.trim()) return true;
+  if(cat === 'emails') {
+    const re = /^[^s@]+@[^s@]+.[^s@]+$/;
+    if(!re.test(entry.value.trim())) {
+      errEl.textContent = 'Please enter a valid email address (e.g. name@example.com)';
+      errEl.style.display = 'block';
+      input.style.borderColor = '#EF4444';
+      return false;
+    }
+  }
+  // Duplicate check
+  const dupes = state[cat].filter(e => e.id !== entry.id && e.value.trim().toLowerCase() === entry.value.trim().toLowerCase() && e.value.trim() !== '');
+  if(dupes.length > 0) {
+    errEl.textContent = 'This '+(cat==='phones'?'phone number':'email address')+' is already added to this contact.';
+    errEl.style.display = 'block';
+    input.style.borderColor = '#EF4444';
+    return false;
+  }
+  errEl.style.display = 'none';
+  input.style.borderColor = '';
+  return true;
+}
+
+// ── ADD ENTRY ──────────────────────────────────────────────────────
+function addEntry(cat) {
+  state[cat].push({id:nextId[cat]++,value:'',primary:false});
+  renderEntries(cat);
+  // Focus the new input
+  const list = document.getElementById(cat+'-list');
+  const inputs = list.querySelectorAll('input');
+  if(inputs.length) inputs[inputs.length-1].focus();
+}
+
+// ── SET PRIMARY ──────────────────────────────────────────────────
+function setPrimary(cat, id) {
+  const prev = state[cat].find(e=>e.primary);
+  const next = state[cat].find(e=>e.id===id);
+  if(!next) return;
+
+  const moveToPrimary = () => {
+    const i = state[cat].findIndex(e=>e.id===id);
+    if(i > 0) { const [item] = state[cat].splice(i,1); state[cat].unshift(item); }
+    state[cat].forEach(e => e.primary = (e.id===id));
+    primaryChanged = true;
+    renderEntries(cat);
+  };
+
+  const hasDrips = cat !== 'addresses';
+  if(hasDrips && prev && prev.value.trim()) {
+    const typeName = cat==='phones'?'phone number':'email address';
+    const prevVal = prev.value.trim() || '(empty)';
+    const newVal = next.value.trim() || '(empty)';
+    showModal(
+      'Update Primary '+typeName.replace(/^w/,c=>c.toUpperCase()),
+      'Setting "'+newVal+'" as primary. Any active Drip sequences will update to use this '+typeName+' instead of "'+prevVal+'". Continue?',
+      'Yes, Update Primary',
+      () => {
+        moveToPrimary();
+        toast('Primary '+(cat==='phones'?'phone':'email')+' updated. Active Drip sequences will use the new primary.','inf');
+      },
+      false
+    );
+  } else {
+    moveToPrimary();
+    toast('Primary '+(cat==='phones'?'phone number':'email address')+' updated.','ok');
+  }
+}
+
+// ── REMOVE ENTRY ──────────────────────────────────────────────────
+function removeEntry(cat, id) {
+  const entries = state[cat];
+  if(entries.length <= 1) {
+    toast('You must keep at least one '+(cat==='phones'?'phone number':'email address')+'.',  'wa');
+    return;
+  }
+  const entry = entries.find(e=>e.id===id);
+  const wasPrimary = entry && entry.primary;
+
+  const doRemove = () => {
+    state[cat] = state[cat].filter(e=>e.id!==id);
+    if(wasPrimary && state[cat].length > 0) {
+      state[cat][0].primary = true;
+      toast('The '+(cat==='phones'?'phone number':'email address')+' was removed. The next entry has been automatically set as primary.','inf');
+    } else {
+      toast((cat==='phones'?'Phone number':'Email address')+' removed.','ok');
+    }
+    renderEntries(cat);
+  };
+
+  if(wasPrimary) {
+    showModal(
+      'Remove Primary '+(cat==='phones'?'Phone':'Email'),
+      'This is your primary '+(cat==='phones'?'phone number':'email address')+'. Removing it will automatically promote the next entry to primary.',
+      'Remove',
+      doRemove,
+      true
+    );
+  } else {
+    doRemove();
+  }
+}
+
+// ── RENDER ADDRESSES ───────────────────────────────────────────────
+function renderAddresses() {
+  const list = document.getElementById('addresses-list');
+  list.innerHTML = '';
+  state.addresses.forEach((addr,idx) => {
+    const div = document.createElement('div');
+    div.className = 'ae'+(addr.primary?' primary':'');
+    div.dataset.id = addr.id;
+
+    // Header
+    const hd = document.createElement('div');
+    hd.className = 'ae-hd';
+    const label = document.createElement('span');
+    label.style.cssText = 'flex:1;font-size:13px;font-weight:500;color:#374151';
+    label.textContent = addr.primary ? 'Primary Address' : 'Address '+(idx+1);
+    hd.appendChild(label);
+
+    if(addr.primary) {
+      const pb = document.createElement('span');
+      pb.className = 'pbadge';
+      pb.innerHTML = '★ Primary';
+      hd.appendChild(pb);
+    } else {
+      const sb = document.createElement('button');
+      sb.className = 'sbadge';
+      sb.innerHTML = '☆ Set Primary';
+      sb.onclick = () => setAddressPrimary(addr.id);
+      hd.appendChild(sb);
+    }
+
+    const del = document.createElement('button');
+    del.className = 'ei-del';
+    del.innerHTML = '🗑';
+    del.disabled = state.addresses.length <= 1;
+    del.title = state.addresses.length<=1?'Cannot remove the only address':'Remove this address';
+    del.onclick = () => removeAddress(addr.id);
+    hd.appendChild(del);
+    div.appendChild(hd);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'ae-body';
+
+    // Street
+    const streetFg = document.createElement('div');
+    streetFg.className = 'fg';
+    const streetLbl = document.createElement('label');
+    streetLbl.className = 'fl';
+    streetLbl.textContent = 'Street Address';
+    const streetIn = document.createElement('input');
+    streetIn.className = 'fi';
+    streetIn.type = 'text';
+    streetIn.placeholder = 'Enter street address';
+    streetIn.value = addr.street;
+    streetIn.addEventListener('input',e=>{addr.street=e.target.value});
+    streetFg.appendChild(streetLbl);
+    streetFg.appendChild(streetIn);
+    body.appendChild(streetFg);
+
+    // City / State / ZIP
+    const row = document.createElement('div');
+    row.className = 'grid-addr';
+    const fields = [
+      {label:'City',key:'city',placeholder:'City',type:'text'},
+      {label:'State',key:'state',placeholder:'State',type:'text'},
+      {label:'ZIP',key:'zip',placeholder:'ZIP',type:'text'}
+    ];
+    fields.forEach(f => {
+      const fg = document.createElement('div');
+      fg.className = 'fg';
+      const lbl = document.createElement('label');
+      lbl.className = 'fl';
+      lbl.textContent = f.label;
+      const inp = document.createElement('input');
+      inp.className = 'fi';
+      inp.type = f.type;
+      inp.placeholder = f.placeholder;
+      inp.value = addr[f.key];
+      inp.addEventListener('input',e=>{addr[f.key]=e.target.value});
+      fg.appendChild(lbl);
+      fg.appendChild(inp);
+      row.appendChild(fg);
+    });
+    body.appendChild(row);
+    div.appendChild(body);
+    list.appendChild(div);
+  });
+}
+
+function setAddressPrimary(id) {
+  const idx = state.addresses.findIndex(a=>a.id===id);
+  if(idx > 0) { const [item] = state.addresses.splice(idx,1); state.addresses.unshift(item); }
+  state.addresses.forEach(a => a.primary = (a.id===id));
+  renderAddresses();
+  toast('Primary address updated.','ok');
+}
+
+function addAddress() {
+  state.addresses.push({id:nextId.addresses++,street:'',city:'',state:'',zip:'',primary:false});
+  renderAddresses();
+  // Focus first input of last address
+  const list = document.getElementById('addresses-list');
+  const aes = list.querySelectorAll('.ae');
+  if(aes.length) {
+    const last = aes[aes.length-1];
+    const inp = last.querySelector('input');
+    if(inp) inp.focus();
+  }
+}
+
+function removeAddress(id) {
+  if(state.addresses.length <= 1) {
+    toast('You must keep at least one address.','wa');
+    return;
+  }
+  const addr = state.addresses.find(a=>a.id===id);
+  const wasPrimary = addr && addr.primary;
+  const doRemove = () => {
+    state.addresses = state.addresses.filter(a=>a.id!==id);
+    if(wasPrimary && state.addresses.length>0) {
+      state.addresses[0].primary=true;
+      toast('Address removed. The next address has been set as primary.','inf');
+    } else {
+      toast('Address removed.','ok');
+    }
+    renderAddresses();
+  };
+  if(wasPrimary) {
+    showModal('Remove Primary Address','This is the primary address. Removing it will automatically promote the next address to primary.','Remove',doRemove,true);
+  } else {
+    doRemove();
+  }
+}
+
+// ── SAVE ───────────────────────────────────────────────────────────
+function saveContact() {
+  let valid = true;
+  // Validate all email entries
+  state.emails.forEach(entry => {
+    if(entry.value.trim()) {
+      const re = /^[^s@]+@[^s@]+.[^s@]+$/;
+      if(!re.test(entry.value.trim())) valid = false;
+    }
+    // Duplicate check
+    const dupes = state.emails.filter(e=>e.id!==entry.id && e.value.trim().toLowerCase()===entry.value.trim().toLowerCase() && e.value.trim()!=='');
+    if(dupes.length>0) valid=false;
+  });
+  state.phones.forEach(entry => {
+    const dupes = state.phones.filter(e=>e.id!==entry.id && e.value.trim()===entry.value.trim() && e.value.trim()!=='');
+    if(dupes.length>0) valid=false;
+  });
+  if(!valid) {
+    toast('Please fix validation errors before saving.','er');
+    return;
+  }
+  const fn = document.getElementById('firstName').value.trim();
+  const ln = document.getElementById('lastName').value.trim();
+  if(!fn && !ln) {
+    toast('Please enter at least a first or last name.','wa');
+    document.getElementById('firstName').focus();
+    return;
+  }
+  // Show/hide the primary-change notice
+  const notice = document.getElementById('primary-change-notice');
+  if(primaryChanged && notice) {
+    notice.classList.add('show');
+  }
+  primaryChanged = false; // reset after save
+  toast('Contact saved successfully!','ok');
+}
+
+function cancelForm() {
+  toast('Changes discarded.','inf');
+}
+
+// ── PAGE TABS (prototype behavior) ────────────────────────────────
+document.querySelectorAll('.ptab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// ── INIT ──────────────────────────────────────────────────────────
+renderEntries('phones');
+renderEntries('emails');
+renderAddresses();
+</script>
+</body>
+</html>
