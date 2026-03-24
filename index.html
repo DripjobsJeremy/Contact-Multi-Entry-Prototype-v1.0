@@ -296,10 +296,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
             <button class="me-add" onclick="addEntry('emails')">
               <i class="fa fa-plus" style="font-size:11px"></i> Add Email Address
             </button>
-            <div class="pri-notice" id="primary-change-notice">
-              <i class="fa fa-circle-info" style="color:#d97706;margin-top:1px;flex-shrink:0"></i>
-              <span><strong>Heads up:</strong> This change applies going forward only. Any open Deals, Jobs, or Invoices still show the old contact info — update those records manually if needed.</span>
-            </div>
+          </div>
+
+          <!-- PRIMARY CHANGE NOTICE — shown immediately when primary phone/email changes -->
+          <div class="pri-notice" id="primary-change-notice">
+            <i class="fa fa-circle-info" style="color:#d97706;margin-top:1px;flex-shrink:0"></i>
+            <span><strong>Heads up:</strong> This change applies going forward only. Any open Deals, Jobs, or Invoices still show the old contact info — update those records manually if needed.</span>
           </div>
 
         </div>
@@ -318,7 +320,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
             <div>
               <div class="addr-col-hd">
                 <span class="addr-col-title">Job Address</span>
-                <span class="pbadge" style="font-size:10px">★ Primary</span>
+                <span id="job-addr-ctrl"><span class="pbadge" style="font-size:10px">★ Primary</span></span>
               </div>
               <div style="display:flex;flex-direction:column;gap:10px">
                 <div class="mf" style="flex:none;width:100%">
@@ -350,6 +352,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
             <div>
               <div class="addr-col-hd">
                 <span class="addr-col-title">Billing Address</span>
+                <span id="bill-addr-ctrl"><button type="button" class="sbadge" style="font-size:10px" onclick="setAddrPrimary('billing')">☆ Set Primary</button></span>
                 <label class="same-toggle">
                   Same as job
                   <label class="tgl">
@@ -639,8 +642,9 @@ function setPrimary(cat, id) {
     var i = state[cat].map(function(e){return e.id;}).indexOf(id);
     if(i > 0) { var item = state[cat].splice(i,1)[0]; state[cat].unshift(item); }
     state[cat].forEach(function(e){ e.primary = (e.id===id); });
-    primaryChanged = true;
     renderEntries(cat);
+    // Show the notice immediately — user needs to see this before they save
+    document.getElementById('primary-change-notice').classList.add('show');
   };
 
   if(prev && prev.value.trim()) {
@@ -678,6 +682,33 @@ function removeEntry(cat, id) {
       'Remove', doRemove, true
     );
   } else { doRemove(); }
+}
+
+// ── ADDRESS PRIMARY ───────────────────────────────────────────────────
+// addrPrimary tracks which address is primary: 'job', 'billing', or an extra addr id
+var addrPrimary = 'job';
+
+function setAddrPrimary(target) {
+  addrPrimary = target;
+
+  var jobCtrl  = document.getElementById('job-addr-ctrl');
+  var billCtrl = document.getElementById('bill-addr-ctrl');
+
+  if(target === 'job') {
+    jobCtrl.innerHTML  = '<span class="pbadge" style="font-size:10px">★ Primary</span>';
+    billCtrl.innerHTML = '<button type="button" class="sbadge" style="font-size:10px" onclick="setAddrPrimary(\'billing\')">☆ Set Primary</button>';
+  } else if(target === 'billing') {
+    billCtrl.innerHTML = '<span class="pbadge" style="font-size:10px">★ Primary</span>';
+    jobCtrl.innerHTML  = '<button type="button" class="sbadge" style="font-size:10px" onclick="setAddrPrimary(\'job\')">☆ Set Primary</button>';
+  } else {
+    // Extra address — clear both fixed headers to Set Primary
+    jobCtrl.innerHTML  = '<button type="button" class="sbadge" style="font-size:10px" onclick="setAddrPrimary(\'job\')">☆ Set Primary</button>';
+    billCtrl.innerHTML = '<button type="button" class="sbadge" style="font-size:10px" onclick="setAddrPrimary(\'billing\')">☆ Set Primary</button>';
+  }
+
+  // Re-render extra addresses so their badges update too
+  renderExtraAddresses();
+  toast('Primary address updated.', 'ok');
 }
 
 // ── BILLING TOGGLE + SYNC ─────────────────────────────────────────────
@@ -744,6 +775,24 @@ function renderExtraAddresses() {
     title.className = 'ae-hd-title';
     title.textContent = 'Additional Address';
     hd.appendChild(title);
+
+    // Primary badge or Set Primary button
+    if(addrPrimary === addr.id) {
+      var pb = document.createElement('span');
+      pb.className = 'pbadge';
+      pb.style.fontSize = '10px';
+      pb.innerHTML = '★ Primary';
+      hd.appendChild(pb);
+    } else {
+      var spBtn = document.createElement('button');
+      spBtn.type = 'button';
+      spBtn.className = 'sbadge';
+      spBtn.style.fontSize = '10px';
+      spBtn.innerHTML = '☆ Set Primary';
+      spBtn.onclick = (function(id){ return function(){ setAddrPrimary(id); }; })(addr.id);
+      hd.appendChild(spBtn);
+    }
+
     var del = document.createElement('button');
     del.className = 'ae-del';
     del.innerHTML = '<i class="fa fa-trash-can"></i>';
@@ -830,9 +879,6 @@ function saveContact() {
     if(state.emails.filter(function(x){ return x.id!==e.id && x.value.trim().toLowerCase()===e.value.trim().toLowerCase() && e.value.trim()!==''; }).length) valid = false;
   });
   if(!valid) { toast('Please fix validation errors before saving.','er'); return; }
-
-  if(primaryChanged) document.getElementById('primary-change-notice').classList.add('show');
-  primaryChanged = false;
   toast('Contact saved successfully!','ok');
 }
 
