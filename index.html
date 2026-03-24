@@ -4,790 +4,809 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>New Customer - DripJobs</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f4f6;color:#1f2937;display:flex;min-height:100vh;font-size:14px}
-.sidebar{width:214px;background:#1e1b4b;min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
-.logo-area{padding:14px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
-.logo-icon{width:36px;height:36px;background:#7C3AED;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:900}
-.logo-text{color:#fff;font-size:17px;font-weight:700}
-.workspace{padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08);cursor:pointer}
-.workspace:hover{background:rgba(255,255,255,0.05)}
-.ws-avatar{width:28px;height:28px;border-radius:6px;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
-.ws-name{color:#e5e7eb;font-size:13px;font-weight:500}
-.nav-section{padding:16px 16px 4px;color:#6b7280;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;color:#9ca3af;font-size:13px;cursor:pointer;transition:all 0.15s;user-select:none;border-radius:6px;margin:1px 8px}
-.nav-item:hover{background:rgba(255,255,255,0.08);color:#e5e7eb}
-.nav-item.active{background:#7C3AED;color:#fff}
-.nav-item .ni{font-size:15px;width:18px;text-align:center;flex-shrink:0}
-.nav-badge{margin-left:auto;background:#EF4444;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px}
-.main-wrap{flex:1;display:flex;flex-direction:column;min-width:0}
-.topbar{height:56px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:50}
-.search-wrap{flex:1;max-width:380px;position:relative}
-.search-wrap input{width:100%;padding:9px 14px 9px 36px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;color:#374151;background:#f9fafb;outline:none;transition:border-color 0.15s}
-.search-wrap input:focus{border-color:#7C3AED;background:#fff}
-.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:15px}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
-.notif-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid #e5e7eb;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;position:relative;color:#6b7280}
-.notif-btn:hover{border-color:#7C3AED;color:#7C3AED}
-.user-chip{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:8px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f9fb;color:#1f2937;min-height:100vh;font-size:14px}
+
+/* ── TOPBAR ── */
+.topbar{height:55px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 20px;position:sticky;top:0;z-index:100;gap:16px}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}
+.brand svg{width:30px;height:30px}
+.brand-name{font-size:17px;font-weight:700;color:#1e1b4b;letter-spacing:-0.3px}
+.search-bar{flex:1;max-width:380px;display:flex;align-items:center;border:1.5px solid #e5e7eb;border-radius:20px;padding:6px 14px;gap:8px;background:#fff}
+.search-bar input{border:none;outline:none;font-size:13px;color:#374151;background:none;flex:1;min-width:0}
+.search-bar input::placeholder{color:#9ca3af}
+.search-arrow{color:#b0b0b0;font-size:12px;margin-left:auto}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.tb-btn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7280;font-size:16px;border:none;background:none}
+.tb-btn:hover{background:#f3f4f6}
+.user-chip{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:8px;margin-left:4px}
 .user-chip:hover{background:#f3f4f6}
-.user-avatar{width:32px;height:32px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
-.user-name{font-size:13px;color:#374151;font-weight:500}
-.content{padding:24px;flex:1}
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
-.stat-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px 22px}
-.stat-card.highlight{background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%);border-color:#c4b5fd}
-.stat-label{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#6b7280;margin-bottom:6px}
-.stat-value{font-size:26px;font-weight:700;color:#111827}
-.page-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.ptab{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid #e5e7eb;background:#fff;color:#6b7280;transition:all 0.15s;min-height:36px}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:#7C3AED;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-name{font-size:13px;color:#374151;font-weight:500;white-space:nowrap}
+
+/* ── LAYOUT ── */
+.app-body{display:flex;min-height:calc(100vh - 55px)}
+
+/* ── SIDEBAR ── */
+.sidebar{width:200px;background:#fff;border-right:1px solid #e5e7eb;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:55px;height:calc(100vh - 55px);overflow-y:auto}
+.ws-row{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.ws-row:hover{background:#fafafa}
+.ws-icon{width:32px;height:32px;border-radius:7px;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0}
+.ws-name{font-size:13px;font-weight:600;color:#111827}
+.nav-group{padding:10px 0 2px}
+.nav-lbl{padding:4px 14px 4px;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9ca3af}
+.ni{display:flex;align-items:center;gap:9px;padding:6px 10px;margin:1px 6px;border-radius:6px;cursor:pointer;font-size:13px;color:#4b5563;transition:background .12s,color .12s;-webkit-user-select:none;user-select:none}
+.ni:hover{background:#f3f4f6;color:#111827}
+.ni.active{background:#7C3AED;color:#fff}
+.ni-icon{width:17px;text-align:center;font-size:13px;flex-shrink:0;opacity:.8}
+.ni.active .ni-icon{opacity:1}
+.ni-badge{margin-left:auto;background:#7C3AED;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+.ni.active .ni-badge{background:rgba(255,255,255,.3)}
+.sidebar-foot{margin-top:auto;border-top:1px solid #e5e7eb}
+.settings-row{display:flex;align-items:center;gap:9px;padding:11px 14px;cursor:pointer;font-size:13px;color:#4b5563;transition:background .12s}
+.settings-row:hover{background:#f3f4f6}
+
+/* ── MAIN ── */
+.main{flex:1;min-width:0;background:#f8f9fb}
+
+/* PAGE TABS */
+.page-tabs{display:flex;gap:8px;padding:12px 24px;background:#fff;border-bottom:1px solid #e5e7eb;flex-wrap:wrap}
+.ptab{padding:5px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid #e5e7eb;background:#fff;color:#6b7280;transition:all .15s;white-space:nowrap}
 .ptab:hover{border-color:#7C3AED;color:#7C3AED}
-.ptab.active{background:#7C3AED;border-color:#7C3AED;color:#fff}
-.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:16px}
-.card-hd{padding:18px 22px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f3f4f6}
-.card-hd-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.card-hd h2{font-size:15px;font-weight:600;color:#111827}
-.card-bd{padding:20px 22px}
-.fg{display:flex;flex-direction:column;gap:4px}
-.fl{font-size:11px;font-weight:500;color:#6b7280;margin-bottom:1px}
-.fi{padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;color:#111827;background:#fff;outline:none;transition:border-color 0.15s,box-shadow 0.15s;min-height:44px;width:100%;font-family:inherit}
-.fi:focus{border-color:#7C3AED;box-shadow:0 0 0 3px rgba(124,58,237,0.08)}
-.fi::placeholder{color:#9ca3af}
-.fi.err{border-color:#EF4444!important;box-shadow:0 0 0 3px rgba(239,68,68,0.08)!important}
-.errmsg{font-size:11px;color:#EF4444;margin-top:3px;display:none}
+.ptab.active{border-color:#7C3AED;color:#7C3AED;font-weight:600}
+
+/* CONTENT */
+.content{padding:18px 24px 48px}
+
+/* SECTION */
+.sec{background:#fff;border:1px solid #e9eaec;border-radius:8px;margin-bottom:14px}
+.sec-hd{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid #f3f4f6}
+.sec-ico{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.sec-hd h2{font-size:14px;font-weight:600;color:#111827}
+.sec-bd{padding:18px 20px}
+
+/* MATERIAL OUTLINED INPUT */
+.mf{position:relative;flex:1;min-width:100px}
+.mf label{position:absolute;left:10px;top:-7px;font-size:11px;font-weight:500;color:#6b7280;background:#fff;padding:0 3px;pointer-events:none;line-height:14px;white-space:nowrap}
+.mf input,.mf select{width:100%;padding:0 12px;height:50px;border:1px solid #d1d5db;border-radius:4px;font-size:14px;color:#111827;background:#fff;outline:none;transition:border-color .15s,box-shadow .15s;font-family:inherit}
+.mf input:focus,.mf select:focus{border-color:#7C3AED;box-shadow:0 0 0 2px rgba(124,58,237,.1)}
+.mf input:focus~label,.mf select:focus~label{color:#7C3AED}
+.mf input::placeholder{color:#9ca3af}
+.mf input.err{border-color:#EF4444!important}
+.mf input.err:focus{box-shadow:0 0 0 2px rgba(239,68,68,.1)!important}
+.mf-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.mf-row:first-child{margin-top:0}
+.errmsg{font-size:11px;color:#EF4444;margin-top:3px;display:none;padding-left:2px}
 .errmsg.show{display:block}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.grid-addr{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
-.fgap{display:flex;flex-direction:column;gap:14px}
-/* MULTI ENTRY */
-.multi-wrap{margin-top:2px}
-.entry-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
-.ei{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fafafa;transition:all 0.15s}
-.ei.primary{border-color:#7C3AED;background:#faf5ff}
-.ei:hover{border-color:#c4b5fd}
-.ei-val{flex:1;min-width:0}
-.ei-val input{border:none;background:none;font-size:14px;color:#111827;outline:none;width:100%;padding:0;font-family:inherit}
-.ei-val input:focus{color:#7C3AED}
-.pbadge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;background:#7C3AED;color:#fff;font-size:11px;font-weight:600;border-radius:20px;flex-shrink:0;white-space:nowrap}
-.sbadge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;background:#f3f4f6;color:#6b7280;font-size:11px;font-weight:500;border-radius:20px;flex-shrink:0;cursor:pointer;border:1px solid #e5e7eb;transition:all 0.15s;white-space:nowrap;min-height:22px}
+
+/* MULTI-ENTRY */
+.me-block{margin-top:16px}
+.me-block-lbl{font-size:12px;font-weight:600;color:#374151;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.me-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.me-row{display:flex;align-items:center;gap:0;border:1px solid #d1d5db;border-radius:4px;background:#fff;min-height:50px;transition:border-color .15s;overflow:hidden}
+.me-row.is-primary{border-color:#7C3AED;background:#faf8ff}
+.me-row:hover{border-color:#a78bfa}
+.me-row.is-primary:hover{border-color:#7C3AED}
+.me-input-wrap{flex:1;min-width:0;padding:0 12px}
+.me-input{width:100%;border:none;background:none;outline:none;font-size:14px;color:#111827;font-family:inherit;padding:0;height:50px}
+.me-input::placeholder{color:#9ca3af}
+.pbadge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;background:#7C3AED;color:#fff;font-size:11px;font-weight:600;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-right:8px}
+.sbadge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;background:#f3f4f6;color:#6b7280;font-size:11px;font-weight:500;border-radius:20px;border:1px solid #e5e7eb;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s;margin-right:8px}
 .sbadge:hover{background:#ede9fe;color:#7C3AED;border-color:#c4b5fd}
-.ei-del{width:30px;height:30px;border-radius:6px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:15px;transition:all 0.15s;flex-shrink:0}
-.ei-del:hover{background:#fef2f2;color:#EF4444}
-.ei-del:disabled{opacity:0.3;cursor:not-allowed}
-.add-btn{display:flex;align-items:center;gap:8px;padding:9px 14px;border:1.5px dashed #d1d5db;border-radius:8px;background:none;cursor:pointer;color:#7C3AED;font-size:13px;font-weight:500;transition:all 0.15s;min-height:44px;width:100%}
-.add-btn:hover{border-color:#7C3AED;background:#faf5ff}
-/* ADDRESS MULTI */
-.ae{border:1.5px solid #e5e7eb;border-radius:10px;background:#fafafa;transition:all 0.15s;margin-bottom:8px}
-.ae.primary{border-color:#7C3AED;background:#faf5ff}
-.ae:hover{border-color:#c4b5fd}
-.ae-hd{display:flex;align-items:center;gap:9px;padding:10px 12px 8px}
-.ae-body{padding:0 12px 12px;display:flex;flex-direction:column;gap:8px}
-/* SETTINGS ROW */
-.settings-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-/* TOGGLES */
-.tgl-item{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #f3f4f6}
-.tgl-item:last-child{border-bottom:none}
-.tgl-label{font-size:14px;color:#374151}
-.tgl{position:relative;width:42px;height:22px;flex-shrink:0}
+.me-del{width:36px;min-height:50px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:13px;border-left:1px solid #f0f0f0;flex-shrink:0;transition:all .15s}
+.me-del:hover{background:#fef2f2;color:#EF4444}
+.me-del:disabled{opacity:.35;cursor:not-allowed}
+.me-add{display:flex;align-items:center;gap:7px;padding:8px 12px;border:1.5px dashed #d1d5db;border-radius:4px;background:none;cursor:pointer;color:#7C3AED;font-size:13px;font-weight:500;transition:all .15s;width:100%;min-height:44px}
+.me-add:hover{border-color:#7C3AED;background:#faf8ff}
+
+/* PRIMARY NOTICE */
+.pri-notice{display:none;align-items:flex-start;gap:8px;padding:10px 12px;background:#fffbeb;border:1px solid #fcd34d;border-radius:6px;font-size:12px;color:#78350f;margin-top:10px;line-height:1.5}
+.pri-notice.show{display:flex}
+.pri-notice strong{font-weight:600}
+
+/* ADDRESSES */
+.addr-2col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.addr-col-hd{display:flex;align-items:center;margin-bottom:10px}
+.addr-col-title{font-size:13px;font-weight:600;color:#374151;flex:1}
+.same-toggle{display:flex;align-items:center;gap:7px;font-size:12px;color:#374151;cursor:pointer}
+.addr-extra-list{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.ae{border:1px solid #e5e7eb;border-radius:6px;overflow:hidden}
+.ae.is-primary{border-color:#7C3AED}
+.ae-hd{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9fafb;border-bottom:1px solid #f0f0f0}
+.ae.is-primary .ae-hd{background:#faf8ff;border-bottom-color:#ede9fe}
+.ae-hd-title{flex:1;font-size:12px;font-weight:600;color:#374151}
+.ae-del{width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:12px;transition:all .15s}
+.ae-del:hover{background:#fef2f2;color:#EF4444}
+.ae-del:disabled{opacity:.3;cursor:not-allowed}
+.ae-bd{padding:12px;display:flex;flex-direction:column;gap:10px}
+
+/* TOGGLE */
+.tgl{position:relative;width:38px;height:20px;flex-shrink:0;display:inline-block;cursor:pointer}
 .tgl input{opacity:0;width:0;height:0;position:absolute}
-.tgl-track{position:absolute;inset:0;background:#d1d5db;border-radius:11px;cursor:pointer;transition:background 0.2s}
+.tgl-track{position:absolute;inset:0;background:#d1d5db;border-radius:10px;transition:background .2s;cursor:pointer}
 .tgl input:checked+.tgl-track{background:#7C3AED}
-.tgl-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform 0.2s;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
-.tgl input:checked~.tgl-thumb{transform:translateX(20px)}
-.btn-pr{padding:11px 26px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s;min-height:46px}
-.btn-pr:hover{background:#6d28d9;box-shadow:0 4px 12px rgba(124,58,237,0.3)}
-.btn-sc{padding:11px 26px;background:#fff;color:#374151;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s;min-height:46px}
-.btn-sc:hover{border-color:#7C3AED;color:#7C3AED}
-.form-actions{display:flex;gap:12px;padding-top:8px}
+.tgl-thumb{position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tgl input:checked~.tgl-thumb{transform:translateX(18px)}
+
+/* OPTIONS */
+.opt-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f5f5f5}
+.opt-row:last-child{border-bottom:none}
+.opt-lbl{font-size:14px;color:#374151}
+
+/* ACTIONS */
+.form-actions{display:flex;gap:10px;padding-top:4px}
+.btn-save{padding:10px 28px;background:#7C3AED;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,box-shadow .15s}
+.btn-save:hover{background:#6d28d9;box-shadow:0 4px 12px rgba(124,58,237,.3)}
+.btn-cancel{padding:10px 28px;background:#fff;color:#374151;border:1.5px solid #d1d5db;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-cancel:hover{border-color:#7C3AED;color:#7C3AED}
+.page-footer{text-align:center;padding:20px;font-size:12px;color:#9ca3af}
+
+/* TOAST */
 .toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.toast{padding:12px 16px;border-radius:10px;font-size:14px;font-weight:500;color:#fff;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.2);pointer-events:all;max-width:340px;animation:tst .3s ease}
-.toast.ok{background:#059669}
-.toast.er{background:#DC2626}
-.toast.wa{background:#D97706}
-.toast.inf{background:#2563EB}
+.toast{padding:11px 16px;border-radius:8px;font-size:14px;font-weight:500;color:#fff;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,.2);pointer-events:all;max-width:360px;animation:tst .3s ease}
+.toast.ok{background:#059669}.toast.er{background:#DC2626}.toast.wa{background:#D97706}.toast.inf{background:#2563EB}
 @keyframes tst{from{transform:translateX(80px);opacity:0}to{transform:translateX(0);opacity:1}}
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
-.modal-box{background:#fff;border-radius:14px;padding:26px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25)}
-.modal-box h3{font-size:17px;font-weight:700;margin-bottom:8px}
-.modal-box p{font-size:14px;color:#6b7280;margin-bottom:20px}
+.modal-box{background:#fff;border-radius:12px;padding:24px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-box h3{font-size:16px;font-weight:700;margin-bottom:8px;color:#111827}
+.modal-box p{font-size:14px;color:#6b7280;margin-bottom:20px;line-height:1.5}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end}
-.drip-warn{display:flex;gap:8px;padding:10px 12px;background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;font-size:12px;color:#92400e;margin-top:8px}
-.footer{text-align:center;padding:20px;color:#9ca3af;font-size:12px}
-.primary-notice{display:none;align-items:flex-start;gap:10px;padding:11px 14px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;font-size:12px;color:#78350f;line-height:1.5;margin-top:10px}
-.primary-notice.show{display:flex}
-.primary-notice-icon{font-size:15px;flex-shrink:0;margin-top:1px}
-.primary-notice strong{font-weight:600}
+
+@media(max-width:900px){.sidebar{display:none}.addr-2col{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<!-- SIDEBAR -->
-<nav class="sidebar">
-  <div class="logo-area">
-    <div class="logo-icon">⚙</div>
-    <span class="logo-text">dripjobs</span>
-  </div>
-  <div class="workspace">
-    <div class="ws-avatar">TN</div>
-    <span class="ws-name">The Nest</span>
-  </div>
-  <div class="nav-section">Sales</div>
-  <div class="nav-item active"><span class="ni">👤</span> Contacts</div>
-  <div class="nav-item"><span class="ni">📋</span> Sales List</div>
-  <div class="nav-item"><span class="ni">🔄</span> Sales Pipeline</div>
-  <div class="nav-section">Jobs</div>
-  <div class="nav-item"><span class="ni">🔧</span> Change Orders</div>
-  <div class="nav-item"><span class="ni">📅</span> Job Schedule</div>
-  <div class="nav-item"><span class="ni">☰</span> Jobs List</div>
-  <div class="nav-item"><span class="ni">📊</span> Jobs Pipeline</div>
-  <div class="nav-item"><span class="ni">📁</span> Work Orders</div>
-  <div class="nav-section">Daily Operations</div>
-  <div class="nav-item"><span class="ni">🗓</span> Appointments <span class="nav-badge">11</span></div>
-  <div class="nav-item"><span class="ni">💬</span> Chat</div>
-  <div class="nav-item"><span class="ni">✅</span> Tasks</div>
-  <div class="nav-section">Documents</div>
-  <div class="nav-item"><span class="ni">📄</span> Invoices</div>
-  <div class="nav-item"><span class="ni">📝</span> Proposals</div>
-  <div class="nav-section">Financials</div>
-  <div class="nav-item"><span class="ni">💰</span> Job Costing</div>
-  <div class="nav-item"><span class="ni">📈</span> Production Rates</div>
-  <div class="nav-item"><span class="ni">📉</span> Metrics</div>
-  <div class="nav-section">Marketing</div>
-  <div style="margin-top:auto"></div>
-  <div class="nav-item" style="margin-bottom:8px"><span class="ni">⚙</span> Settings</div>
-</nav>
 
-<!-- MAIN -->
-<div class="main-wrap">
-  <!-- TOPBAR -->
-  <header class="topbar">
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" placeholder="Search leads, contacts, tags..." aria-label="Search">
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="brand" href="#">
+    <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="15" fill="#ede9fe"/><circle cx="16" cy="16" r="9" stroke="#7C3AED" stroke-width="2.5" fill="none"/><circle cx="16" cy="16" r="4" fill="#7C3AED"/></svg>
+    <span class="brand-name">dripjobs</span>
+  </a>
+  <div class="search-bar">
+    <i class="fa fa-magnifying-glass" style="color:#9ca3af;font-size:13px"></i>
+    <input type="text" placeholder="Search leads, contacts, tags...">
+    <i class="fa fa-arrow-right search-arrow"></i>
+  </div>
+  <div class="topbar-right">
+    <button type="button" class="tb-btn" title="Alerts"><i class="fa-regular fa-triangle-exclamation" style="color:#f59e0b"></i></button>
+    <button type="button" class="tb-btn" title="Notifications"><i class="fa-regular fa-bell"></i></button>
+    <div class="user-chip">
+      <div class="user-avatar">JH</div>
+      <span class="user-name">Jeremy Harrison <i class="fa fa-chevron-down" style="font-size:10px;margin-left:2px"></i></span>
     </div>
-    <div class="topbar-right">
-      <div class="notif-btn" title="Notifications">⚠️</div>
-      <div class="notif-btn" title="Alerts">🔔</div>
-      <div class="user-chip">
-        <div class="user-avatar">JH</div>
-        <span class="user-name">Jeremy Harrison ▾</span>
-      </div>
-    </div>
-  </header>
+  </div>
+</header>
 
-  <!-- CONTENT -->
-  <main class="content">
-    <!-- STATS -->
-    <div class="stats-row">
-      <div class="stat-card highlight">
-        <div class="stat-label">Open Balance</div>
-        <div class="stat-value">$0.00</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Lifetime Revenue</div>
-        <div class="stat-value">$0.00</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Unpaid Invoices</div>
-        <div class="stat-value">0 Open</div>
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="ws-row">
+      <div class="ws-icon"><i class="fa fa-building" style="font-size:13px"></i></div>
+      <span class="ws-name">The Nest</span>
+    </div>
+    <div class="nav-group">
+      <div class="nav-lbl">Sales</div>
+      <div class="ni active"><span class="ni-icon"><i class="fa-regular fa-user"></i></span>Contacts</div>
+      <div class="ni"><span class="ni-icon"><i class="fa-regular fa-rectangle-list"></i></span>Sales List</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-bars-staggered"></i></span>Sales Pipeline</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-lbl">Jobs</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-file-pen"></i></span>Change Orders</div>
+      <div class="ni"><span class="ni-icon"><i class="fa-regular fa-calendar"></i></span>Job Schedule</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-list"></i></span>Jobs List</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-diagram-project"></i></span>Jobs Pipeline</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-file-lines"></i></span>Work Orders</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-lbl">Daily Operations</div>
+      <div class="ni"><span class="ni-icon"><i class="fa-regular fa-calendar-check"></i></span>Appointments<span class="ni-badge">11</span></div>
+      <div class="ni"><span class="ni-icon"><i class="fa-regular fa-comment-dots"></i></span>Chat</div>
+      <div class="ni"><span class="ni-icon"><i class="fa-regular fa-square-check"></i></span>Tasks</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-lbl">Documents</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-file-invoice-dollar"></i></span>Invoices</div>
+      <div class="ni"><span class="ni-icon"><i class="fa-regular fa-file-lines"></i></span>Proposals</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-lbl">Financials</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-coins"></i></span>Job Costing</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-chart-line"></i></span>Production Rates</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-chart-pie"></i></span>Metrics</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-lbl">Marketing</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-wave-square"></i></span>Activity</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-bullhorn"></i></span>Blast</div>
+      <div class="ni"><span class="ni-icon"><i class="fa fa-droplet"></i></span>Drips</div>
+    </div>
+    <div class="sidebar-foot">
+      <div class="settings-row">
+        <i class="fa fa-gear" style="font-size:14px"></i>
+        <span>Settings</span>
+        <i class="fa fa-chevron-down" style="margin-left:auto;font-size:10px;color:#9ca3af"></i>
       </div>
     </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
 
     <!-- PAGE TABS -->
     <div class="page-tabs">
       <button class="ptab active">Information</button>
       <button class="ptab">Tasks (0 Open)</button>
-      <button class="ptab">Notes (0)</button>
+      <button class="ptab">Notes ( 0 )</button>
       <button class="ptab">Attachments (0)</button>
       <button class="ptab">Emails (0)</button>
       <button class="ptab">SMS (0)</button>
     </div>
 
-    <!-- PERSONAL INFORMATION -->
-    <div class="card" id="card-personal">
-      <div class="card-hd">
-        <div class="card-hd-ico" style="background:#eff6ff">👤</div>
-        <h2>Personal Information</h2>
-      </div>
-      <div class="card-bd">
-        <div class="fgap">
-          <div class="grid2">
-            <div class="fg">
-              <label class="fl" for="firstName">First Name</label>
-              <input id="firstName" class="fi" type="text" placeholder="First name">
+    <div class="content">
+
+      <!-- PERSONAL INFORMATION -->
+      <div class="sec">
+        <div class="sec-hd">
+          <div class="sec-ico" style="background:#eff6ff"><i class="fa-regular fa-user" style="color:#3b82f6"></i></div>
+          <h2>Personal Information</h2>
+        </div>
+        <div class="sec-bd">
+
+          <!-- Name / Company / Fax row -->
+          <div class="mf-row">
+            <div class="mf">
+              <input id="firstName" type="text" placeholder=" ">
+              <label for="firstName">First Name</label>
             </div>
-            <div class="fg">
-              <label class="fl" for="lastName">Last Name</label>
-              <input id="lastName" class="fi" type="text" placeholder="Last name">
+            <div class="mf">
+              <input id="lastName" type="text" placeholder=" ">
+              <label for="lastName">Last Name</label>
             </div>
-          </div>
-          <div class="fg">
-            <label class="fl" for="company">Company Name</label>
-            <input id="company" class="fi" type="text" placeholder="Company name">
+            <div class="mf">
+              <input id="company" type="text" placeholder=" ">
+              <label for="company">Company Name</label>
+            </div>
+            <div class="mf" style="max-width:160px">
+              <input id="fax" type="tel" placeholder=" ">
+              <label for="fax">Fax</label>
+            </div>
           </div>
 
           <!-- PHONE NUMBERS -->
-          <div class="fg">
-            <label class="fl">Phone Numbers</label>
-            <div class="multi-wrap">
-              <div class="entry-list" id="phones-list"></div>
-              <button class="add-btn" id="add-phone-btn" onclick="addEntry('phones')">
-                <span>＋</span> Add Phone Number
-              </button>
-            </div>
+          <div class="me-block">
+            <div class="me-block-lbl"><i class="fa fa-phone" style="color:#9ca3af"></i> Phone Numbers</div>
+            <div class="me-list" id="phones-list"></div>
+            <button class="me-add" onclick="addEntry('phones')">
+              <i class="fa fa-plus" style="font-size:11px"></i> Add Phone Number
+            </button>
           </div>
 
           <!-- EMAIL ADDRESSES -->
-          <div class="fg">
-            <label class="fl">Email Addresses</label>
-            <div class="multi-wrap">
-              <div class="entry-list" id="emails-list"></div>
-              <button class="add-btn" id="add-email-btn" onclick="addEntry('emails')">
-                <span>＋</span> Add Email Address
-              </button>
-              <div class="primary-notice" id="primary-change-notice">
-                <span class="primary-notice-icon">ℹ️</span>
-                <span><strong>Heads up:</strong> Updating a Primary Phone Number or Email Address applies going forward. If this contact has open Deals, Jobs, or Invoices, you may want to review and update the contact information on those records as well.</span>
+          <div class="me-block">
+            <div class="me-block-lbl"><i class="fa fa-envelope" style="color:#9ca3af"></i> Email Addresses</div>
+            <div class="me-list" id="emails-list"></div>
+            <button class="me-add" onclick="addEntry('emails')">
+              <i class="fa fa-plus" style="font-size:11px"></i> Add Email Address
+            </button>
+            <div class="pri-notice" id="primary-change-notice">
+              <i class="fa fa-circle-info" style="color:#d97706;margin-top:1px;flex-shrink:0"></i>
+              <span><strong>Heads up:</strong> Updating a Primary Phone Number or Email Address applies going forward. If this contact has open Deals, Jobs, or Invoices, you may want to review and update the contact information on those records as well.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ADDRESSES -->
+      <div class="sec">
+        <div class="sec-hd">
+          <div class="sec-ico" style="background:#f0fdf4"><i class="fa fa-location-dot" style="color:#22c55e"></i></div>
+          <h2>Addresses</h2>
+        </div>
+        <div class="sec-bd">
+          <!-- Job + Billing two-col -->
+          <div class="addr-2col">
+            <!-- JOB ADDRESS -->
+            <div>
+              <div class="addr-col-hd">
+                <span class="addr-col-title">Job Address</span>
+                <span class="pbadge" style="font-size:10px">★ Primary</span>
               </div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="mf" style="flex:none;width:100%">
+                  <input id="job-line1" type="text" placeholder="Enter a location">
+                  <label for="job-line1">Address Line 1</label>
+                </div>
+                <div class="mf" style="flex:none;width:100%">
+                  <input id="job-line2" type="text" placeholder=" ">
+                  <label for="job-line2">Address Line 2</label>
+                </div>
+                <div class="mf-row" style="margin-top:0">
+                  <div class="mf" style="flex:2">
+                    <input id="job-city" type="text" placeholder=" ">
+                    <label for="job-city">City</label>
+                  </div>
+                  <div class="mf" style="flex:1">
+                    <input id="job-state" type="text" placeholder=" ">
+                    <label for="job-state">State</label>
+                  </div>
+                  <div class="mf" style="flex:1">
+                    <input id="job-zip" type="text" placeholder=" ">
+                    <label for="job-zip">Zip</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BILLING ADDRESS -->
+            <div>
+              <div class="addr-col-hd">
+                <span class="addr-col-title">Billing Address</span>
+                <label class="same-toggle">
+                  Same as job
+                  <label class="tgl">
+                    <input type="checkbox" id="sameAsJob" aria-label="Billing address same as job address" checked onchange="toggleBilling()">
+                    <span class="tgl-track"></span>
+                    <span class="tgl-thumb"></span>
+                  </label>
+                </label>
+              </div>
+              <div id="billing-fields" style="display:flex;flex-direction:column;gap:10px;opacity:.5;pointer-events:none">
+                <div class="mf" style="flex:none;width:100%">
+                  <input id="bill-line1" type="text" placeholder="Enter a location">
+                  <label for="bill-line1">Address Line 1</label>
+                </div>
+                <div class="mf" style="flex:none;width:100%">
+                  <input id="bill-line2" type="text" placeholder=" ">
+                  <label for="bill-line2">Address Line 2</label>
+                </div>
+                <div class="mf-row" style="margin-top:0">
+                  <div class="mf" style="flex:2">
+                    <input id="bill-city" type="text" placeholder=" ">
+                    <label for="bill-city">City</label>
+                  </div>
+                  <div class="mf" style="flex:1">
+                    <input id="bill-state" type="text" placeholder=" ">
+                    <label for="bill-state">State</label>
+                  </div>
+                  <div class="mf" style="flex:1">
+                    <input id="bill-zip" type="text" placeholder=" ">
+                    <label for="bill-zip">Zip</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- EXTRA ADDRESSES -->
+          <div id="extra-addr-list" class="addr-extra-list"></div>
+
+          <button class="me-add" style="margin-top:14px" onclick="addExtraAddress()">
+            <i class="fa fa-plus" style="font-size:11px"></i> Add Address
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTACT SETTINGS -->
+      <div class="sec">
+        <div class="sec-hd">
+          <div class="sec-ico" style="background:#fffbeb"><i class="fa fa-gear" style="color:#f59e0b"></i></div>
+          <h2>Contact Settings</h2>
+        </div>
+        <div class="sec-bd">
+          <div class="mf-row">
+            <div class="mf">
+              <select id="tag">
+                <option value="">Select a type...</option>
+                <option>Residential</option><option>Commercial</option>
+                <option>HOA</option><option>Property Manager</option>
+              </select>
+              <label for="tag">Contact Tag</label>
+            </div>
+            <div class="mf">
+              <select id="lead-src">
+                <option value="">Select a lead source...</option>
+                <option>Google</option><option>Referral</option>
+                <option>Angi Leads</option><option>Facebook</option><option>Direct Mail</option>
+              </select>
+              <label for="lead-src">Lead Source</label>
+            </div>
+            <div class="mf">
+              <select id="deal-owner">
+                <option>Jeremy Harrison</option>
+              </select>
+              <label for="deal-owner">Deal Owner</label>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ADDRESSES -->
-    <div class="card" id="card-addresses">
-      <div class="card-hd">
-        <div class="card-hd-ico" style="background:#f0fdf4">📍</div>
-        <h2>Addresses</h2>
-      </div>
-      <div class="card-bd">
-        <div class="fg">
-          <label class="fl">Physical Addresses</label>
-          <div id="addresses-list"></div>
-          <button class="add-btn" id="add-addr-btn" onclick="addAddress()">
-            <span>＋</span> Add Address
-          </button>
+      <!-- OPTIONS -->
+      <div class="sec">
+        <div class="sec-hd">
+          <div class="sec-ico" style="background:#fef2f2"><i class="fa fa-shield-halved" style="color:#ef4444"></i></div>
+          <h2>Options</h2>
+        </div>
+        <div class="sec-bd" style="padding-bottom:6px">
+          <div class="opt-row"><span class="opt-lbl">Is Lead</span><label class="tgl"><input type="checkbox" id="isLead" aria-label="Is Lead"><span class="tgl-track"></span><span class="tgl-thumb"></span></label></div>
+          <div class="opt-row"><span class="opt-lbl">Active Contact</span><label class="tgl"><input type="checkbox" id="isActive" aria-label="Active Contact" checked><span class="tgl-track"></span><span class="tgl-thumb"></span></label></div>
+          <div class="opt-row"><span class="opt-lbl">Opt Out of Blasts/Newsletters</span><label class="tgl"><input type="checkbox" aria-label="Opt Out of Blasts/Newsletters"><span class="tgl-track"></span><span class="tgl-thumb"></span></label></div>
+          <div class="opt-row"><span class="opt-lbl">Opt Out of Drips</span><label class="tgl"><input type="checkbox" aria-label="Opt Out of Drips"><span class="tgl-track"></span><span class="tgl-thumb"></span></label></div>
+          <div class="opt-row"><span class="opt-lbl">Opt Out of All SMS</span><label class="tgl"><input type="checkbox" aria-label="Opt Out of All SMS"><span class="tgl-track"></span><span class="tgl-thumb"></span></label></div>
         </div>
       </div>
-    </div>
 
-    <!-- CONTACT SETTINGS -->
-    <div class="card">
-      <div class="card-hd">
-        <div class="card-hd-ico" style="background:#fffbeb">⚙</div>
-        <h2>Contact Settings</h2>
+      <!-- FORM ACTIONS -->
+      <div class="form-actions">
+        <button type="button" class="btn-save" onclick="saveContact()">Save</button>
+        <button type="button" class="btn-cancel" onclick="cancelForm()">Cancel</button>
       </div>
-      <div class="card-bd">
-        <div class="settings-grid">
-          <div class="fg">
-            <label class="fl" for="tag">Contact Tag</label>
-            <select id="tag" class="fi">
-              <option value="">Select a type...</option>
-              <option>Residential</option>
-              <option>Commercial</option>
-              <option>HOA</option>
-              <option>Property Manager</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label class="fl" for="lead-src">Lead Source</label>
-            <select id="lead-src" class="fi">
-              <option value="">Select a lead source...</option>
-              <option>Google</option>
-              <option>Referral</option>
-              <option>Angi Leads</option>
-              <option>Facebook</option>
-              <option>Direct Mail</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label class="fl" for="deal-owner">Deal Owner</label>
-            <select id="deal-owner" class="fi">
-              <option>Jeremy Harrison</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
+      <div class="page-footer">Contact created at 3/24/2026 6:56:14 PM by Jeremy Harrison<br>Copyright © 2026 Dripjobs</div>
 
-    <!-- OPTIONS -->
-    <div class="card">
-      <div class="card-hd">
-        <div class="card-hd-ico" style="background:#fef2f2">🛡</div>
-        <h2>Options</h2>
-      </div>
-      <div class="card-bd">
-        <div class="tgl-item">
-          <span class="tgl-label">Is Lead</span>
-          <label class="tgl"><input type="checkbox" id="isLead"><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
-        </div>
-        <div class="tgl-item">
-          <span class="tgl-label">Active Contact</span>
-          <label class="tgl"><input type="checkbox" id="isActive" checked><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
-        </div>
-        <div class="tgl-item">
-          <span class="tgl-label">Opt Out of Blasts/Newsletters</span>
-          <label class="tgl"><input type="checkbox" id="optBlasts"><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
-        </div>
-        <div class="tgl-item">
-          <span class="tgl-label">Opt Out of Drips</span>
-          <label class="tgl"><input type="checkbox" id="optDrips"><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
-        </div>
-        <div class="tgl-item">
-          <span class="tgl-label">Opt Out of All SMS</span>
-          <label class="tgl"><input type="checkbox" id="optSMS"><span class="tgl-track"></span><span class="tgl-thumb"></span></label>
-        </div>
-      </div>
     </div>
-
-    <!-- ACTIONS -->
-    <div class="form-actions">
-      <button class="btn-pr" onclick="saveContact()">Save Changes</button>
-      <button class="btn-sc" onclick="cancelForm()">Cancel</button>
-    </div>
-    <div class="footer">Contact created at 3/24/2026 6:56:14 PM by Jeremy Harrison<br>Copyright © 2026 Dripjobs</div>
-  </main>
+  </div>
 </div>
 
-<!-- TOAST CONTAINER -->
+<!-- TOASTS -->
 <div class="toast-wrap" id="toasts"></div>
 
-<!-- CONFIRM MODAL -->
+<!-- MODAL -->
 <div class="modal-bg" id="confirm-modal">
   <div class="modal-box">
-    <h3 id="modal-title">Confirm Action</h3>
-    <p id="modal-body">Are you sure?</p>
+    <h3 id="modal-title">Confirm</h3>
+    <p id="modal-body"></p>
     <div class="modal-actions">
-      <button class="btn-sc" style="min-height:40px;padding:8px 20px" onclick="modalCancel()">Cancel</button>
-      <button class="btn-pr" style="min-height:40px;padding:8px 20px;background:#EF4444" id="modal-confirm-btn" onclick="modalConfirm()">Confirm</button>
+      <button class="btn-cancel" style="padding:8px 18px" onclick="modalCancel()">Cancel</button>
+      <button class="btn-save" style="padding:8px 18px" id="modal-confirm-btn" onclick="modalConfirm()">Confirm</button>
     </div>
   </div>
 </div>
 
 <script>
-// ── PHONE FORMAT ───────────────────────────────────────────────────
+// ── PHONE FORMAT ────────────────────────────────────────────────────
 function formatPhone(raw) {
-  var digits = raw.replace(/\D/g,'').slice(0,10);
-  if(digits.length === 0) return '';
-  if(digits.length <= 3) return '('+digits;
-  if(digits.length <= 6) return '('+digits.slice(0,3)+') '+digits.slice(3);
-  return '('+digits.slice(0,3)+') '+digits.slice(3,6)+'-'+digits.slice(6);
+  var d = raw.replace(/\D/g,'').slice(0,10);
+  if(!d.length) return '';
+  if(d.length <= 3) return '('+d;
+  if(d.length <= 6) return '('+d.slice(0,3)+') '+d.slice(3);
+  return '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6);
 }
-function stripPhone(val) {
-  return val.replace(/\D/g,'');
-}
+function stripPhone(v) { return v.replace(/\D/g,''); }
 
-// ── STATE ──────────────────────────────────────────────────────────
-const state = {
-  phones: [{id:1,value:'',primary:true}],
-  emails: [{id:1,value:'',primary:true}],
-  addresses: [{id:1,street:'',city:'',state:'',zip:'',primary:true}]
+// ── STATE ───────────────────────────────────────────────────────────
+var state = {
+  phones: [{id:1, value:'', primary:true}],
+  emails: [{id:1, value:'', primary:true}],
+  extraAddrs: []
 };
-let nextId = {phones:2,emails:2,addresses:2};
-let modalCallback = null;
-let primaryChanged = false; // tracks if primary phone/email was changed since last save
+var nextId = {phones:2, emails:2, addr:1};
+var modalCallback = null;
+var primaryChanged = false;
 
-// ── TOAST ──────────────────────────────────────────────────────────
-function toast(msg, type='ok', dur=3500) {
-  const icons = {ok:'✅',er:'❌',wa:'⚠️',inf:'ℹ️'};
-  const t = document.createElement('div');
+// ── TOAST ────────────────────────────────────────────────────────────
+function toast(msg, type, dur) {
+  type = type||'ok'; dur = dur||3500;
+  var icons = {ok:'✅',er:'❌',wa:'⚠️',inf:'ℹ️'};
+  var t = document.createElement('div');
   t.className = 'toast '+type;
   t.innerHTML = '<span>'+icons[type]+'</span><span>'+msg+'</span>';
   document.getElementById('toasts').appendChild(t);
-  setTimeout(()=>{t.style.animation='tst .3s ease reverse';setTimeout(()=>t.remove(),300)},dur);
+  setTimeout(function(){ t.style.animation='tst .3s ease reverse'; setTimeout(function(){ t.remove(); },300); }, dur);
 }
 
-// ── MODAL ──────────────────────────────────────────────────────────
-function showModal(title,body,confirmTxt,cb,danger=true) {
+// ── MODAL ────────────────────────────────────────────────────────────
+function showModal(title, body, confirmTxt, cb, danger) {
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-body').textContent = body;
-  const btn = document.getElementById('modal-confirm-btn');
+  var btn = document.getElementById('modal-confirm-btn');
   btn.textContent = confirmTxt;
-  btn.style.background = danger ? '#EF4444' : '#7C3AED';
+  btn.style.background = (danger !== false) ? '#EF4444' : '#7C3AED';
   document.getElementById('confirm-modal').classList.add('open');
   modalCallback = cb;
 }
-function modalCancel() {
-  document.getElementById('confirm-modal').classList.remove('open');
-  modalCallback = null;
-}
-function modalConfirm() {
-  document.getElementById('confirm-modal').classList.remove('open');
-  if(modalCallback) modalCallback();
-  modalCallback = null;
-}
+function modalCancel() { document.getElementById('confirm-modal').classList.remove('open'); modalCallback = null; }
+function modalConfirm() { document.getElementById('confirm-modal').classList.remove('open'); if(modalCallback) modalCallback(); modalCallback = null; }
 
-// ── RENDER ENTRIES (phones/emails) ─────────────────────────────────
+// ── RENDER PHONES / EMAILS ───────────────────────────────────────────
 function renderEntries(cat) {
-  const list = document.getElementById(cat+'-list');
+  var list = document.getElementById(cat+'-list');
   list.innerHTML = '';
-  const entries = state[cat];
-  const isPhone = cat === 'phones';
+  var entries = state[cat];
+  var isPhone = (cat === 'phones');
 
-  entries.forEach((entry,idx) => {
-    const div = document.createElement('div');
-    div.className = 'ei' + (entry.primary?' primary':'');
-    div.dataset.id = entry.id;
+  entries.forEach(function(entry, idx) {
+    var row = document.createElement('div');
+    row.className = 'me-row' + (entry.primary ? ' is-primary' : '');
 
-    const valDiv = document.createElement('div');
-    valDiv.className = 'ei-val';
-    const input = document.createElement('input');
+    // Input wrapper (holds input + error)
+    var inputWrap = document.createElement('div');
+    inputWrap.className = 'me-input-wrap';
+
+    var input = document.createElement('input');
     input.type = isPhone ? 'tel' : 'email';
-    input.placeholder = isPhone ? 'e.g. (555) 867-5309' : 'e.g. name@example.com';
+    input.className = 'me-input';
+    input.placeholder = isPhone ? '(XXX) XXX-XXXX' : 'Primary email to receive proposals and invoices';
+    if(idx > 0 && !isPhone) input.placeholder = 'name@example.com';
     input.value = entry.value;
-    input.setAttribute('aria-label', (isPhone?'Phone':'Email')+' number '+(idx+1));
-    input.addEventListener('input', e => {
+    input.setAttribute('aria-label', (isPhone ? 'Phone' : 'Email') + ' ' + (idx+1));
+
+    input.addEventListener('input', function(e) {
       if(isPhone) {
         var pos = e.target.selectionStart;
-        var prevLen = e.target.value.length;
-        var formatted = formatPhone(e.target.value);
-        e.target.value = formatted;
-        // nudge cursor forward past formatting chars so it doesn't stick before parens/dashes
-        var diff = formatted.length - prevLen;
-        e.target.setSelectionRange(pos + diff, pos + diff);
-        entry.value = formatted;
+        var prev = e.target.value.length;
+        var fmt = formatPhone(e.target.value);
+        e.target.value = fmt;
+        var diff = fmt.length - prev;
+        try { e.target.setSelectionRange(pos+diff, pos+diff); } catch(ex){}
+        entry.value = fmt;
       } else {
         entry.value = e.target.value;
       }
-      // clear error
-      var err = div.querySelector('.errmsg');
-      if(err) err.style.display='none';
-      input.style.borderColor='';
+      var err = inputWrap.querySelector('.errmsg');
+      if(err) err.style.display = 'none';
+      input.classList.remove('err');
     });
-    input.addEventListener('blur', e => validateEntry(cat,entry,input,div));
-    valDiv.appendChild(input);
+    input.addEventListener('blur', function() { validateEntry(cat, entry, input, inputWrap); });
 
-    const errEl = document.createElement('div');
+    var errEl = document.createElement('div');
     errEl.className = 'errmsg';
-    errEl.style.cssText = 'font-size:11px;color:#EF4444;margin-top:3px;display:none;';
-    valDiv.appendChild(errEl);
-    div.appendChild(valDiv);
+    inputWrap.appendChild(input);
+    inputWrap.appendChild(errEl);
+    row.appendChild(inputWrap);
 
-    // Badge
+    // Primary badge / Set primary button
     if(entry.primary) {
-      const badge = document.createElement('span');
+      var badge = document.createElement('span');
       badge.className = 'pbadge';
-      badge.title = 'Primary – used in communications and drip sequences';
+      badge.title = 'Primary — used in all communications and drip sequences';
       badge.innerHTML = '★ Primary';
-      div.appendChild(badge);
+      row.appendChild(badge);
     } else {
-      const badge = document.createElement('button');
-      badge.className = 'sbadge';
-      badge.title = 'Set as primary';
-      badge.innerHTML = '☆ Set Primary';
-      badge.onclick = () => setPrimary(cat, entry.id);
-      div.appendChild(badge);
+      var setBtn = document.createElement('button');
+      setBtn.className = 'sbadge';
+      setBtn.innerHTML = '☆ Set Primary';
+      setBtn.title = 'Set as primary ' + (isPhone ? 'phone number' : 'email address');
+      setBtn.onclick = (function(id){ return function(){ setPrimary(cat, id); }; })(entry.id);
+      row.appendChild(setBtn);
     }
 
     // Delete button
-    const del = document.createElement('button');
-    del.className = 'ei-del';
-    del.innerHTML = '🗑';
-    del.title = entries.length <= 1 ? 'Cannot remove the only entry' : 'Remove this '+(isPhone?'phone':'email');
-    del.disabled = entries.length <= 1;
-    del.onclick = () => removeEntry(cat, entry.id);
-    div.appendChild(del);
+    var del = document.createElement('button');
+    del.className = 'me-del';
+    del.innerHTML = '<i class="fa fa-trash-can"></i>';
+    del.disabled = (entries.length <= 1);
+    del.title = (entries.length <= 1) ? 'Cannot remove the only entry' : ('Remove this ' + (isPhone ? 'phone number' : 'email address'));
+    del.onclick = (function(id){ return function(){ removeEntry(cat, id); }; })(entry.id);
+    row.appendChild(del);
 
-    list.appendChild(div);
+    list.appendChild(row);
   });
 }
 
-// ── VALIDATE ENTRY ─────────────────────────────────────────────────
+// ── VALIDATE ─────────────────────────────────────────────────────────
 function validateEntry(cat, entry, input, container) {
-  const errEl = container.querySelector('.errmsg');
-  if(!entry.value.trim()) return true;
-  if(cat === 'emails') {
-    const re = /^[^s@]+@[^s@]+.[^s@]+$/;
-    if(!re.test(entry.value.trim())) {
-      errEl.textContent = 'Please enter a valid email address (e.g. name@example.com)';
-      errEl.style.display = 'block';
-      input.style.borderColor = '#EF4444';
-      return false;
+  var errEl = container.querySelector('.errmsg');
+  if(!entry.value.trim()) { errEl.style.display='none'; input.classList.remove('err'); return true; }
+
+  if(cat === 'phones') {
+    var d = stripPhone(entry.value);
+    if(d.length > 0 && d.length < 10) {
+      errEl.textContent = 'Phone number must be 10 digits — (XXX) XXX-XXXX';
+      errEl.style.display = 'block'; input.classList.add('err'); return false;
     }
   }
-  // Duplicate check
-  const normalize = v => cat === 'phones' ? stripPhone(v) : v.trim().toLowerCase();
-  const dupes = state[cat].filter(e => e.id !== entry.id && normalize(e.value) === normalize(entry.value) && entry.value.trim() !== '');
-  if(dupes.length > 0) {
-    errEl.textContent = 'This '+(cat==='phones'?'phone number':'email address')+' is already added to this contact.';
-    errEl.style.display = 'block';
-    input.style.borderColor = '#EF4444';
-    return false;
+  if(cat === 'emails') {
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(entry.value.trim())) {
+      errEl.textContent = 'Please enter a valid email address (e.g. name@example.com)';
+      errEl.style.display = 'block'; input.classList.add('err'); return false;
+    }
   }
-  errEl.style.display = 'none';
-  input.style.borderColor = '';
-  return true;
+
+  var norm = function(v) { return cat==='phones' ? stripPhone(v) : v.trim().toLowerCase(); };
+  var dupes = state[cat].filter(function(e){ return e.id !== entry.id && norm(e.value) === norm(entry.value) && entry.value.trim() !== ''; });
+  if(dupes.length) {
+    errEl.textContent = 'This ' + (cat==='phones' ? 'phone number' : 'email address') + ' is already added to this contact.';
+    errEl.style.display = 'block'; input.classList.add('err'); return false;
+  }
+
+  errEl.style.display = 'none'; input.classList.remove('err'); return true;
 }
 
-// ── ADD ENTRY ──────────────────────────────────────────────────────
+// ── ADD ENTRY ─────────────────────────────────────────────────────────
 function addEntry(cat) {
-  state[cat].push({id:nextId[cat]++,value:'',primary:false});
+  state[cat].push({id: nextId[cat]++, value:'', primary:false});
   renderEntries(cat);
-  // Focus the new input
-  const list = document.getElementById(cat+'-list');
-  const inputs = list.querySelectorAll('input');
+  var list = document.getElementById(cat+'-list');
+  var inputs = list.querySelectorAll('.me-input');
   if(inputs.length) inputs[inputs.length-1].focus();
 }
 
-// ── SET PRIMARY ──────────────────────────────────────────────────
+// ── SET PRIMARY ───────────────────────────────────────────────────────
 function setPrimary(cat, id) {
-  const prev = state[cat].find(e=>e.primary);
-  const next = state[cat].find(e=>e.id===id);
+  var prev = state[cat].filter(function(e){ return e.primary; })[0];
+  var next = state[cat].filter(function(e){ return e.id===id; })[0];
   if(!next) return;
 
-  const moveToPrimary = () => {
-    const i = state[cat].findIndex(e=>e.id===id);
-    if(i > 0) { const [item] = state[cat].splice(i,1); state[cat].unshift(item); }
-    state[cat].forEach(e => e.primary = (e.id===id));
+  var doSet = function() {
+    var i = state[cat].map(function(e){return e.id;}).indexOf(id);
+    if(i > 0) { var item = state[cat].splice(i,1)[0]; state[cat].unshift(item); }
+    state[cat].forEach(function(e){ e.primary = (e.id===id); });
     primaryChanged = true;
     renderEntries(cat);
   };
 
-  const hasDrips = cat !== 'addresses';
-  if(hasDrips && prev && prev.value.trim()) {
-    const typeName = cat==='phones'?'phone number':'email address';
-    const prevVal = prev.value.trim() || '(empty)';
-    const newVal = next.value.trim() || '(empty)';
+  if(prev && prev.value.trim()) {
+    var typeName = cat==='phones' ? 'phone number' : 'email address';
     showModal(
-      'Update Primary '+typeName.replace(/^w/,c=>c.toUpperCase()),
-      'Setting "'+newVal+'" as primary. Any active Drip sequences will update to use this '+typeName+' instead of "'+prevVal+'". Continue?',
+      'Update Primary ' + (cat==='phones' ? 'Phone Number' : 'Email Address'),
+      'Setting "' + (next.value||'(empty)') + '" as primary. Active Drip sequences will use this ' + typeName + ' instead of "' + (prev.value||'(empty)') + '". Continue?',
       'Yes, Update Primary',
-      () => {
-        moveToPrimary();
-        toast('Primary '+(cat==='phones'?'phone':'email')+' updated. Active Drip sequences will use the new primary.','inf');
-      },
+      function() { doSet(); toast('Primary ' + (cat==='phones'?'phone':'email') + ' updated. Active Drip sequences will reflect the new primary.','inf'); },
       false
     );
   } else {
-    moveToPrimary();
-    toast('Primary '+(cat==='phones'?'phone number':'email address')+' updated.','ok');
+    doSet();
+    toast('Primary ' + (cat==='phones'?'phone number':'email address') + ' updated.','ok');
   }
 }
 
-// ── REMOVE ENTRY ──────────────────────────────────────────────────
+// ── REMOVE ENTRY ──────────────────────────────────────────────────────
 function removeEntry(cat, id) {
-  const entries = state[cat];
-  if(entries.length <= 1) {
-    toast('You must keep at least one '+(cat==='phones'?'phone number':'email address')+'.',  'wa');
-    return;
-  }
-  const entry = entries.find(e=>e.id===id);
-  const wasPrimary = entry && entry.primary;
+  if(state[cat].length <= 1) { toast('You must keep at least one ' + (cat==='phones'?'phone number':'email address') + '.','wa'); return; }
+  var entry = state[cat].filter(function(e){ return e.id===id; })[0];
+  var wasPrimary = entry && entry.primary;
 
-  const doRemove = () => {
-    state[cat] = state[cat].filter(e=>e.id!==id);
-    if(wasPrimary && state[cat].length > 0) {
-      state[cat][0].primary = true;
-      toast('The '+(cat==='phones'?'phone number':'email address')+' was removed. The next entry has been automatically set as primary.','inf');
-    } else {
-      toast((cat==='phones'?'Phone number':'Email address')+' removed.','ok');
-    }
+  var doRemove = function() {
+    state[cat] = state[cat].filter(function(e){ return e.id!==id; });
+    if(wasPrimary && state[cat].length) { state[cat][0].primary = true; toast('Removed. The next entry has been set as primary.','inf'); }
+    else { toast((cat==='phones'?'Phone number':'Email address') + ' removed.','ok'); }
     renderEntries(cat);
   };
 
   if(wasPrimary) {
     showModal(
-      'Remove Primary '+(cat==='phones'?'Phone':'Email'),
-      'This is your primary '+(cat==='phones'?'phone number':'email address')+'. Removing it will automatically promote the next entry to primary.',
-      'Remove',
-      doRemove,
-      true
+      'Remove Primary ' + (cat==='phones'?'Phone':'Email'),
+      'This is your primary ' + (cat==='phones'?'phone number':'email address') + '. Removing it will automatically promote the next entry to primary.',
+      'Remove', doRemove, true
     );
-  } else {
-    doRemove();
-  }
+  } else { doRemove(); }
 }
 
-// ── RENDER ADDRESSES ───────────────────────────────────────────────
-function renderAddresses() {
-  const list = document.getElementById('addresses-list');
+// ── BILLING TOGGLE ────────────────────────────────────────────────────
+function toggleBilling() {
+  var same = document.getElementById('sameAsJob').checked;
+  var fields = document.getElementById('billing-fields');
+  fields.style.opacity = same ? '0.5' : '1';
+  fields.style.pointerEvents = same ? 'none' : '';
+}
+
+// ── EXTRA ADDRESSES ───────────────────────────────────────────────────
+function renderExtraAddresses() {
+  var list = document.getElementById('extra-addr-list');
   list.innerHTML = '';
-  state.addresses.forEach((addr,idx) => {
-    const div = document.createElement('div');
-    div.className = 'ae'+(addr.primary?' primary':'');
-    div.dataset.id = addr.id;
+  state.extraAddrs.forEach(function(addr) {
+    var ae = document.createElement('div');
+    ae.className = 'ae';
 
-    // Header
-    const hd = document.createElement('div');
+    var hd = document.createElement('div');
     hd.className = 'ae-hd';
-    const label = document.createElement('span');
-    label.style.cssText = 'flex:1;font-size:13px;font-weight:500;color:#374151';
-    label.textContent = addr.primary ? 'Primary Address' : 'Address '+(idx+1);
-    hd.appendChild(label);
-
-    if(addr.primary) {
-      const pb = document.createElement('span');
-      pb.className = 'pbadge';
-      pb.innerHTML = '★ Primary';
-      hd.appendChild(pb);
-    } else {
-      const sb = document.createElement('button');
-      sb.className = 'sbadge';
-      sb.innerHTML = '☆ Set Primary';
-      sb.onclick = () => setAddressPrimary(addr.id);
-      hd.appendChild(sb);
-    }
-
-    const del = document.createElement('button');
-    del.className = 'ei-del';
-    del.innerHTML = '🗑';
-    del.disabled = state.addresses.length <= 1;
-    del.title = state.addresses.length<=1?'Cannot remove the only address':'Remove this address';
-    del.onclick = () => removeAddress(addr.id);
+    var title = document.createElement('span');
+    title.className = 'ae-hd-title';
+    title.textContent = 'Additional Address';
+    hd.appendChild(title);
+    var del = document.createElement('button');
+    del.className = 'ae-del';
+    del.innerHTML = '<i class="fa fa-trash-can"></i>';
+    del.title = 'Remove this address';
+    del.onclick = (function(id){ return function(){ removeExtraAddress(id); }; })(addr.id);
     hd.appendChild(del);
-    div.appendChild(hd);
+    ae.appendChild(hd);
 
-    // Body
-    const body = document.createElement('div');
-    body.className = 'ae-body';
+    var bd = document.createElement('div');
+    bd.className = 'ae-bd';
 
-    // Street
-    const streetFg = document.createElement('div');
-    streetFg.className = 'fg';
-    const streetLbl = document.createElement('label');
-    streetLbl.className = 'fl';
-    streetLbl.textContent = 'Street Address';
-    const streetIn = document.createElement('input');
-    streetIn.className = 'fi';
-    streetIn.type = 'text';
-    streetIn.placeholder = 'Enter street address';
-    streetIn.value = addr.street;
-    streetIn.addEventListener('input',e=>{addr.street=e.target.value});
-    streetFg.appendChild(streetLbl);
-    streetFg.appendChild(streetIn);
-    body.appendChild(streetFg);
-
-    // City / State / ZIP
-    const row = document.createElement('div');
-    row.className = 'grid-addr';
-    const fields = [
-      {label:'City',key:'city',placeholder:'City',type:'text'},
-      {label:'State',key:'state',placeholder:'State',type:'text'},
-      {label:'ZIP',key:'zip',placeholder:'ZIP',type:'text'}
+    var fields = [
+      {id:'line1',label:'Address Line 1',placeholder:'Enter a location',key:'line1'},
+      {id:'line2',label:'Address Line 2',placeholder:' ',key:'line2'}
     ];
-    fields.forEach(f => {
-      const fg = document.createElement('div');
-      fg.className = 'fg';
-      const lbl = document.createElement('label');
-      lbl.className = 'fl';
-      lbl.textContent = f.label;
-      const inp = document.createElement('input');
-      inp.className = 'fi';
-      inp.type = f.type;
+    fields.forEach(function(f) {
+      var mf = document.createElement('div');
+      mf.className = 'mf';
+      mf.style.cssText = 'flex:none;width:100%';
+      var inp = document.createElement('input');
+      inp.type = 'text';
       inp.placeholder = f.placeholder;
       inp.value = addr[f.key];
-      inp.addEventListener('input',e=>{addr[f.key]=e.target.value});
-      fg.appendChild(lbl);
-      fg.appendChild(inp);
-      row.appendChild(fg);
+      inp.addEventListener('input', (function(key){ return function(e){ addr[key]=e.target.value; }; })(f.key));
+      var lbl = document.createElement('label');
+      lbl.textContent = f.label;
+      mf.appendChild(inp);
+      mf.appendChild(lbl);
+      bd.appendChild(mf);
     });
-    body.appendChild(row);
-    div.appendChild(body);
-    list.appendChild(div);
+
+    var csz = document.createElement('div');
+    csz.className = 'mf-row';
+    csz.style.marginTop = '0';
+    [{label:'City',key:'city',flex:'2'},{label:'State',key:'state',flex:'1'},{label:'Zip',key:'zip',flex:'1'}].forEach(function(f){
+      var mf = document.createElement('div');
+      mf.className = 'mf';
+      mf.style.flex = f.flex;
+      var inp = document.createElement('input');
+      inp.type = 'text';
+      inp.placeholder = ' ';
+      inp.value = addr[f.key];
+      inp.addEventListener('input', (function(key){ return function(e){ addr[key]=e.target.value; }; })(f.key));
+      var lbl = document.createElement('label');
+      lbl.textContent = f.label;
+      mf.appendChild(inp);
+      mf.appendChild(lbl);
+      csz.appendChild(mf);
+    });
+    bd.appendChild(csz);
+    ae.appendChild(bd);
+    list.appendChild(ae);
   });
 }
 
-function setAddressPrimary(id) {
-  const idx = state.addresses.findIndex(a=>a.id===id);
-  if(idx > 0) { const [item] = state.addresses.splice(idx,1); state.addresses.unshift(item); }
-  state.addresses.forEach(a => a.primary = (a.id===id));
-  renderAddresses();
-  toast('Primary address updated.','ok');
+function addExtraAddress() {
+  state.extraAddrs.push({id:nextId.addr++, line1:'', line2:'', city:'', state:'', zip:''});
+  renderExtraAddresses();
+  var list = document.getElementById('extra-addr-list');
+  var aes = list.querySelectorAll('.ae');
+  if(aes.length) { var inp = aes[aes.length-1].querySelector('input'); if(inp) inp.focus(); }
 }
 
-function addAddress() {
-  state.addresses.push({id:nextId.addresses++,street:'',city:'',state:'',zip:'',primary:false});
-  renderAddresses();
-  // Focus first input of last address
-  const list = document.getElementById('addresses-list');
-  const aes = list.querySelectorAll('.ae');
-  if(aes.length) {
-    const last = aes[aes.length-1];
-    const inp = last.querySelector('input');
-    if(inp) inp.focus();
-  }
+function removeExtraAddress(id) {
+  state.extraAddrs = state.extraAddrs.filter(function(a){ return a.id!==id; });
+  renderExtraAddresses();
+  toast('Address removed.','ok');
 }
 
-function removeAddress(id) {
-  if(state.addresses.length <= 1) {
-    toast('You must keep at least one address.','wa');
-    return;
-  }
-  const addr = state.addresses.find(a=>a.id===id);
-  const wasPrimary = addr && addr.primary;
-  const doRemove = () => {
-    state.addresses = state.addresses.filter(a=>a.id!==id);
-    if(wasPrimary && state.addresses.length>0) {
-      state.addresses[0].primary=true;
-      toast('Address removed. The next address has been set as primary.','inf');
-    } else {
-      toast('Address removed.','ok');
-    }
-    renderAddresses();
-  };
-  if(wasPrimary) {
-    showModal('Remove Primary Address','This is the primary address. Removing it will automatically promote the next address to primary.','Remove',doRemove,true);
-  } else {
-    doRemove();
-  }
-}
-
-// ── SAVE ───────────────────────────────────────────────────────────
+// ── SAVE ──────────────────────────────────────────────────────────────
 function saveContact() {
-  let valid = true;
-  // Validate all email entries
-  state.emails.forEach(entry => {
-    if(entry.value.trim()) {
-      const re = /^[^s@]+@[^s@]+.[^s@]+$/;
-      if(!re.test(entry.value.trim())) valid = false;
-    }
-    // Duplicate check
-    const dupes = state.emails.filter(e=>e.id!==entry.id && e.value.trim().toLowerCase()===entry.value.trim().toLowerCase() && e.value.trim()!=='');
-    if(dupes.length>0) valid=false;
+  var fn = document.getElementById('firstName').value.trim();
+  var ln = document.getElementById('lastName').value.trim();
+  if(!fn && !ln) { toast('Please enter at least a first or last name.','wa'); document.getElementById('firstName').focus(); return; }
+
+  var valid = true;
+  state.phones.forEach(function(e) {
+    if(e.value.trim() && stripPhone(e.value).length < 10) valid = false;
+    var norm = function(v){ return stripPhone(v); };
+    if(state.phones.filter(function(x){ return x.id!==e.id && norm(x.value)===norm(e.value) && e.value.trim()!==''; }).length) valid = false;
   });
-  state.phones.forEach(entry => {
-    const dupes = state.phones.filter(e=>e.id!==entry.id && stripPhone(e.value)===stripPhone(entry.value) && entry.value.trim()!=='');
-    if(dupes.length>0) valid=false;
+  state.emails.forEach(function(e) {
+    if(e.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.value.trim())) valid = false;
+    if(state.emails.filter(function(x){ return x.id!==e.id && x.value.trim().toLowerCase()===e.value.trim().toLowerCase() && e.value.trim()!==''; }).length) valid = false;
   });
-  if(!valid) {
-    toast('Please fix validation errors before saving.','er');
-    return;
-  }
-  const fn = document.getElementById('firstName').value.trim();
-  const ln = document.getElementById('lastName').value.trim();
-  if(!fn && !ln) {
-    toast('Please enter at least a first or last name.','wa');
-    document.getElementById('firstName').focus();
-    return;
-  }
-  // Show/hide the primary-change notice
-  const notice = document.getElementById('primary-change-notice');
-  if(primaryChanged && notice) {
-    notice.classList.add('show');
-  }
-  primaryChanged = false; // reset after save
+  if(!valid) { toast('Please fix validation errors before saving.','er'); return; }
+
+  if(primaryChanged) document.getElementById('primary-change-notice').classList.add('show');
+  primaryChanged = false;
   toast('Contact saved successfully!','ok');
 }
 
-function cancelForm() {
-  toast('Changes discarded.','inf');
-}
+function cancelForm() { toast('Changes discarded.','inf'); }
 
-// ── PAGE TABS (prototype behavior) ────────────────────────────────
-document.querySelectorAll('.ptab').forEach(tab => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
-    this.classList.add('active');
+// ── TABS ──────────────────────────────────────────────────────────────
+document.querySelectorAll('.ptab').forEach(function(t) {
+  t.addEventListener('click', function() {
+    document.querySelectorAll('.ptab').forEach(function(x){ x.classList.remove('active'); });
+    t.classList.add('active');
   });
 });
 
-// ── INIT ──────────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────────────
 renderEntries('phones');
 renderEntries('emails');
-renderAddresses();
 </script>
 </body>
 </html>
