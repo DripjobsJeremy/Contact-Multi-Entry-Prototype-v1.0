@@ -298,7 +298,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
             </button>
             <div class="pri-notice" id="primary-change-notice">
               <i class="fa fa-circle-info" style="color:#d97706;margin-top:1px;flex-shrink:0"></i>
-              <span><strong>Heads up:</strong> Updating a Primary Phone Number or Email Address applies going forward. If this contact has open Deals, Jobs, or Invoices, you may want to review and update the contact information on those records as well.</span>
+              <span><strong>Heads up:</strong> Updating a Primary Phone or Email applies going forward. If this contact has open Deals, Jobs, or Invoices, you may want to review and update the contact information on those records as well.</span>
             </div>
           </div>
 
@@ -680,12 +680,54 @@ function removeEntry(cat, id) {
   } else { doRemove(); }
 }
 
-// ── BILLING TOGGLE ────────────────────────────────────────────────────
+// ── BILLING TOGGLE + SYNC ─────────────────────────────────────────────
+var JOB_TO_BILL = {
+  'job-line1': 'bill-line1',
+  'job-line2': 'bill-line2',
+  'job-city':  'bill-city',
+  'job-state': 'bill-state',
+  'job-zip':   'bill-zip'
+};
+
+function syncBillingFromJob() {
+  Object.keys(JOB_TO_BILL).forEach(function(jobId) {
+    var jobInput  = document.getElementById(jobId);
+    var billInput = document.getElementById(JOB_TO_BILL[jobId]);
+    if(jobInput && billInput) billInput.value = jobInput.value;
+  });
+}
+
 function toggleBilling() {
-  var same = document.getElementById('sameAsJob').checked;
+  var same   = document.getElementById('sameAsJob').checked;
   var fields = document.getElementById('billing-fields');
-  fields.style.opacity = same ? '0.5' : '1';
-  fields.style.pointerEvents = same ? 'none' : '';
+  if(same) {
+    syncBillingFromJob();
+    fields.style.opacity      = '0.5';
+    fields.style.pointerEvents = 'none';
+  } else {
+    // Clear billing so user starts fresh with independent values
+    Object.values(JOB_TO_BILL).forEach(function(billId) {
+      var el = document.getElementById(billId);
+      if(el) el.value = '';
+    });
+    fields.style.opacity      = '1';
+    fields.style.pointerEvents = '';
+  }
+}
+
+// Keep billing in sync while "Same as job" is ON
+// (script is at bottom of body — DOM is already available)
+function initBillingSync() {
+  Object.keys(JOB_TO_BILL).forEach(function(jobId) {
+    var jobInput = document.getElementById(jobId);
+    if(!jobInput) return;
+    jobInput.addEventListener('input', function() {
+      if(document.getElementById('sameAsJob').checked) {
+        var billInput = document.getElementById(JOB_TO_BILL[jobId]);
+        if(billInput) billInput.value = jobInput.value;
+      }
+    });
+  });
 }
 
 // ── EXTRA ADDRESSES ───────────────────────────────────────────────────
@@ -807,6 +849,7 @@ document.querySelectorAll('.ptab').forEach(function(t) {
 // ── INIT ──────────────────────────────────────────────────────────────
 renderEntries('phones');
 renderEntries('emails');
+initBillingSync();
 </script>
 </body>
 </html>
