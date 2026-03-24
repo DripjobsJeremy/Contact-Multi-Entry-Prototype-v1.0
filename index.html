@@ -368,6 +368,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </div>
 
 <script>
+// ── PHONE FORMAT ───────────────────────────────────────────────────
+function formatPhone(raw) {
+  var digits = raw.replace(/\D/g,'').slice(0,10);
+  if(digits.length === 0) return '';
+  if(digits.length <= 3) return '('+digits;
+  if(digits.length <= 6) return '('+digits.slice(0,3)+') '+digits.slice(3);
+  return '('+digits.slice(0,3)+') '+digits.slice(3,6)+'-'+digits.slice(6);
+}
+function stripPhone(val) {
+  return val.replace(/\D/g,'');
+}
+
 // ── STATE ──────────────────────────────────────────────────────────
 const state = {
   phones: [{id:1,value:'',primary:true}],
@@ -428,11 +440,22 @@ function renderEntries(cat) {
     input.value = entry.value;
     input.setAttribute('aria-label', (isPhone?'Phone':'Email')+' number '+(idx+1));
     input.addEventListener('input', e => {
-      entry.value = e.target.value;
+      if(isPhone) {
+        var pos = e.target.selectionStart;
+        var prevLen = e.target.value.length;
+        var formatted = formatPhone(e.target.value);
+        e.target.value = formatted;
+        // nudge cursor forward past formatting chars so it doesn't stick before parens/dashes
+        var diff = formatted.length - prevLen;
+        e.target.setSelectionRange(pos + diff, pos + diff);
+        entry.value = formatted;
+      } else {
+        entry.value = e.target.value;
+      }
       // clear error
-      const err = div.querySelector('.errmsg');
+      var err = div.querySelector('.errmsg');
       if(err) err.style.display='none';
-      input.classList.remove('err-input');
+      input.style.borderColor='';
     });
     input.addEventListener('blur', e => validateEntry(cat,entry,input,div));
     valDiv.appendChild(input);
@@ -486,7 +509,8 @@ function validateEntry(cat, entry, input, container) {
     }
   }
   // Duplicate check
-  const dupes = state[cat].filter(e => e.id !== entry.id && e.value.trim().toLowerCase() === entry.value.trim().toLowerCase() && e.value.trim() !== '');
+  const normalize = v => cat === 'phones' ? stripPhone(v) : v.trim().toLowerCase();
+  const dupes = state[cat].filter(e => e.id !== entry.id && normalize(e.value) === normalize(entry.value) && entry.value.trim() !== '');
   if(dupes.length > 0) {
     errEl.textContent = 'This '+(cat==='phones'?'phone number':'email address')+' is already added to this contact.';
     errEl.style.display = 'block';
@@ -725,7 +749,7 @@ function saveContact() {
     if(dupes.length>0) valid=false;
   });
   state.phones.forEach(entry => {
-    const dupes = state.phones.filter(e=>e.id!==entry.id && e.value.trim()===entry.value.trim() && e.value.trim()!=='');
+    const dupes = state.phones.filter(e=>e.id!==entry.id && stripPhone(e.value)===stripPhone(entry.value) && entry.value.trim()!=='');
     if(dupes.length>0) valid=false;
   });
   if(!valid) {
